@@ -1,0 +1,30 @@
+{
+  "identity": "passport",
+  "connection": "",
+  "schema": true,
+  "limit": 20,
+  "displayedAttribute": "protocol",
+  "attributes": {
+    "protocol": {
+      "type": "string"
+    },
+    "provider": {
+      "type": "string"
+    },
+    "code": {
+      "type": "string"
+    },
+    "password": {
+      "type": "string",
+      "minLength": 8
+    },
+    "identifier": {
+      "type": "string"
+    },
+    "user": {
+      "model": "user"
+    }
+  },
+  "autoCreatedAt": true,
+  "autoUpdatedAt": true
+}

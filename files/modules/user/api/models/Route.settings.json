@@ -1,0 +1,24 @@
+{
+  "identity": "route",
+  "connection": "permanent",
+  "displayName": "name",
+  "schema": true,
+  "displayedAttribute": "name",
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "controller": {
+      "type": "string"
+    },
+    "action": {
+      "type": "string"
+    },
+    "roles": {
+      "collection": "role",
+      "via": "routes"
+    }
+  },
+  "autoCreatedAt": true,
+  "autoUpdatedAt": true
+}

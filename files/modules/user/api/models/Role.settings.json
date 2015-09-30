@@ -1,0 +1,22 @@
+{
+  "identity": "role",
+  "connection": "permanent",
+  "displayedAttribute": "name",
+  "schema": true,
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "routes": {
+      "collection": "route",
+      "via": "roles"
+    },
+    "users": {
+      "collection": "user",
+      "via": "roles",
+      "dominant": true
+    }
+  },
+  "autoCreatedAt": true,
+  "autoUpdatedAt": true
+}

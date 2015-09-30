@@ -1,0 +1,38 @@
+{
+  "identity": "user",
+  "connection": "",
+  "schema": true,
+  "limit": 20,
+  "displayedAttribute": "username",
+  "attributes": {
+    "username": {
+      "type": "string",
+      "minLength": 6
+    },
+    "email": {
+      "type": "email",
+      "minLength": 6
+    },
+    "lang": {
+      "type": "string",
+      "required": true
+    },
+    "template": {
+      "type": "string",
+      "required": true
+    },
+    "id_ref": {
+      "type": "string"
+    },
+    "passports": {
+      "collection": "passport",
+      "via": "user"
+    },
+    "roles": {
+      "collection": "role",
+      "via": "users"
+    }
+  },
+  "autoCreatedAt": true,
+  "autoUpdatedAt": true
+}

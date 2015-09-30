@@ -1,0 +1,67 @@
+{
+  "routes": {
+    "GET /user": {
+      "controller": "User",
+      "action": "read",
+      "policies": [
+        "isAuthorized"
+      ]
+    },
+    "GET /user/:id": {
+      "controller": "User",
+      "action": "read",
+      "policies": [
+        "isAuthorized"
+      ]
+    },
+    "POST /user": {
+      "controller": "User",
+      "action": "create",
+      "policies": [
+        "isAuthorized"
+      ]
+    },
+    "PUT /user/:id": {
+      "controller": "User",
+      "action": "update",
+      "policies": [
+        "isAuthorized"
+      ]
+    },
+    "DELETE /user/:id": {
+      "controller": "User",
+      "action": "delete",
+      "policies": [
+        "isAuthorized"
+      ]
+    },
+    "POST /auth/logout": {
+      "controller": "Auth",
+      "action": "logout"
+    },
+    "POST /auth/local/:action": {
+      "controller": "Auth",
+      "action": "callback"
+    },
+    "POST /auth/forgotPassword": {
+      "controller": "Auth",
+      "action": "forgotPassword"
+    },
+    "GET /auth/:provider": {
+      "controller": "Auth",
+      "action": "callback"
+    },
+    "POST /auth/:provider": {
+      "controller": "Auth",
+      "action": "callback"
+    },
+    "GET /auth/:provider/callback": {
+      "controller": "Auth",
+      "action": "callback"
+    },
+    "GET /auth/:provider/:action": {
+      "controller": "Auth",
+      "action": "callback"
+    }
+  }
+}
