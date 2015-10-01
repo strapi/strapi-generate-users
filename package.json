@@ -1,6 +1,6 @@
 {
   "name": "strapi-generate-users",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Generate the default user features for a Strapi application.",
   "homepage": "http://strapi.io",
   "keywords": [
