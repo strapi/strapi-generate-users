@@ -5,7 +5,7 @@
  */
 
 // Local utilities.
-const PassportService = require('../Passport');
+const PassportService = require('../passport');
 
 /**
  * OAuth 2.0 Authentication Protocol
