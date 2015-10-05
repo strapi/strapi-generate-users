@@ -53,7 +53,7 @@ exports.hasRole = function *(next) {
   }
 
   // Final check.
-  if (strapi.modules.user.services.user.isUserAuthorized(route, user)) {
+  if (strapi.api.user.services.user.isUserAuthorized(route, user)) {
     yield next;
   } else {
     this.status = 401;

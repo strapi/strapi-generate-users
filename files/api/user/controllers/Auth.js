@@ -21,14 +21,14 @@ module.exports = {
   callback: function * () {
     const ctx = this;
 
-    yield strapi.modules.user.services.passport.callback(this, function (err, user) {
+    yield strapi.api.user.services.passport.callback(this, function (err, user) {
       if (err || !user) {
         ctx.status = 400;
         return ctx.body = err || {};
       } else {
         ctx.status = 200;
         ctx.body = {
-          jwt: strapi.modules.user.services.jwt.issue(user),
+          jwt: strapi.api.user.services.jwt.issue(user),
           user: user
         };
       }

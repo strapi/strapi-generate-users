@@ -15,7 +15,7 @@ exports.authenticated = function *(next) {
 
   // Get and verify JWT via service.
   try {
-    let user = yield strapi.modules.user.services.jwt.getToken(this, true);
+    let user = yield strapi.api.user.services.jwt.getToken(this, true);
 
     // Store user id to request object.
     this.user = yield User.findOne(user.id).populate('roles');

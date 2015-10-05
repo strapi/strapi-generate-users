@@ -13,7 +13,7 @@ exports.isAuthorized = function * (next) {
   // Get and verify JWT via service.
   try {
     // User is authenticated.
-    user = yield strapi.modules.user.services.jwt.getToken(this, true);
+    user = yield strapi.api.user.services.jwt.getToken(this, true);
 
     // Store user id to request object.
     this.user = yield User.findOne(user.id).populate('roles');
@@ -25,7 +25,7 @@ exports.isAuthorized = function * (next) {
   }
 
   // The user object is in the context thanks to
-  // the `authenticated` policy
+  // the `authenticated` policy.
   userId = this.user && this.user.id;
 
   // User is admin.
@@ -57,7 +57,7 @@ exports.isAuthorized = function * (next) {
   }
 
   // Final check.
-  if (yield strapi.modules.user.services.user.isUserAuthorized(route, user, this)) {
+  if (yield strapi.api.user.services.user.isUserAuthorized(route, user, this)) {
     yield next;
   } else {
     this.status = 401;

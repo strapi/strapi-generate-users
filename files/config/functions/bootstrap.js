@@ -16,7 +16,7 @@ const _ = require('lodash');
  */
 
 module.exports.bootstrap = function (cb) {
-  const passport = strapi.modules.user.services.passport;
+  const passport = strapi.api.user.services.passport;
   const fixtures = require('../fixtures/index');
 
   passport.loadStrategies();

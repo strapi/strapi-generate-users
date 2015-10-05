@@ -274,7 +274,7 @@ module.exports = {
 
           if (passport.user) {
             // Issue a new token
-            let token = strapi.modules.user.services.jwt.issue(passport.user);
+            let token = strapi.api.user.services.jwt.issue(passport.user);
 
             // Send the response
             this.body = {
