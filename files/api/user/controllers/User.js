@@ -1,13 +1,13 @@
 'use strict';
 
 /**
- * A set of functions called "actions" for `car`
+ * A set of functions called "actions" for `user`
  */
 
 module.exports = {
 
   /**
-   * Kind of router to create car entry
+   * Kind of router to create user entry
    *
    * @param {Object} this.request
    *
@@ -16,7 +16,7 @@ module.exports = {
 
   create: function * () {
     var params = this.request.body;
-    var controller = 'car';
+    var controller = 'user';
 
     if (params.hasOwnProperty('template') && strapi.controllers[controller + params.template]) {
       controller += params.template;
@@ -26,7 +26,7 @@ module.exports = {
   },
 
   /**
-   * Kind of router to get car entry/entries
+   * Kind of router to get user entry/entries
    *
    * @param {Object} this.request
    *
@@ -35,7 +35,7 @@ module.exports = {
 
   read: function * () {
     var params = this.params;
-    var controller = 'car';
+    var controller = 'user';
 
     if (params.hasOwnProperty('template') && strapi.controllers[controller + params.template]) {
       controller += params.template;
@@ -45,7 +45,7 @@ module.exports = {
   },
 
   /**
-   * Kind of router to update car entry
+   * Kind of router to update user entry
    *
    * @param {Object} this.request
    *
@@ -54,7 +54,7 @@ module.exports = {
 
   update: function * () {
     var params = _.merge(this.request.body, this.params);
-    var controller = 'car';
+    var controller = 'user';
 
     if (params.hasOwnProperty('template') && strapi.controllers[controller + params.template]) {
       controller += params.template;
@@ -64,7 +64,7 @@ module.exports = {
   },
 
   /**
-   * Kind of router to delete car entry
+   * Kind of router to delete user entry
    *
    * @param {Object} this.request
    *
@@ -73,7 +73,7 @@ module.exports = {
 
   delete: function * () {
     var params = _.merge(this.request.body, this.params);
-    var controller = 'car';
+    var controller = 'user';
 
     if (params.hasOwnProperty('template') && strapi.controllers[controller + params.template]) {
       controller += params.template;
@@ -83,7 +83,7 @@ module.exports = {
   },
 
   /**
-   * Create car entry
+   * Create user entry
    *
    * @param {Object} scope
    * @param {Context} _ctx
@@ -105,7 +105,7 @@ module.exports = {
     }
 
     User.create(scope)
-      .exec(function(err, car) {
+      .exec(function(err, user) {
         if (err) {
           if (_ctx) {
             _ctx.status = 400;
@@ -116,14 +116,14 @@ module.exports = {
           });
         }
 
-        deferred.resolve(car);
+        deferred.resolve(user);
       });
 
     return deferred.promise;
   },
 
   /**
-   * Get car entry if `id` is specified
+   * Get user entry if `id` is specified
    * or get entries with automatic pagination
    *
    * @param {Object} scope
@@ -146,7 +146,7 @@ module.exports = {
     }
 
     User.find(scope)
-      .exec(function(err, car) {
+      .exec(function(err, user) {
         if (err) {
           if (_ctx) {
             _ctx.status = 400;
@@ -157,14 +157,14 @@ module.exports = {
           });
         }
 
-        deferred.resolve((scope && scope.id) ? car[0] : car);
+        deferred.resolve((scope && scope.id) ? user[0] : user);
       });
 
     return deferred.promise;
   },
 
   /**
-   * Edit car entry
+   * Edit user entry
    *
    * @param {Object} scope
    * @param {Context} _ctx
@@ -186,7 +186,7 @@ module.exports = {
     }
 
     User.update(scope.id, scope)
-      .exec(function(err, car) {
+      .exec(function(err, user) {
         if (err) {
           if (_ctx) {
             _ctx.status = 400;
@@ -197,14 +197,14 @@ module.exports = {
           });
         }
 
-        deferred.resolve(car);
+        deferred.resolve(user);
       });
 
     return deferred.promise;
   },
 
   /**
-   * Destroy car entry
+   * Destroy user entry
    *
    * @param {Object} scope
    * @param {Context} _ctx
@@ -226,7 +226,7 @@ module.exports = {
     }
 
     User.destroy(scope.id)
-      .exec(function(err, car) {
+      .exec(function(err, user) {
         if (err) {
           if (_ctx) {
             _ctx.status = 400;
@@ -237,7 +237,7 @@ module.exports = {
           });
         }
 
-        deferred.resolve(car);
+        deferred.resolve(user);
       });
 
     return deferred.promise;
