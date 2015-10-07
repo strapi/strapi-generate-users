@@ -215,7 +215,7 @@ passport.loadStrategies = function loadStrategies() {
         Strategy = require(strategy.strategy).Strategy;
         self.use(new Strategy(options, passport.protocols.local.login));
       }
-    } else if (strategy.options && strategy.options.consumerKey && strategy.options.consumerSecret) {
+    } else if (strategy.options && (strategy.options.consumerKey || strategy.options.clientID)) {
       let protocol = strategy.protocol;
       let callback = strategy.callback;
 

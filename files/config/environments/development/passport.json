@@ -9,8 +9,8 @@
         "strategy": "passport-facebook",
         "protocol": "oauth2",
         "options": {
-          "consumerKey": "",
-          "consumerSecret": ""
+          "clientID": "",
+          "clientSecret": ""
         }
       },
       "github": {
@@ -18,8 +18,8 @@
         "strategy": "passport-github",
         "protocol": "oauth2",
         "options": {
-          "consumerKey": "",
-          "consumerSecret": ""
+          "clientID": "",
+          "clientSecret": ""
         }
       },
       "google": {
@@ -27,8 +27,8 @@
         "strategy": "passport-google-oauth",
         "protocol": "oauth2",
         "options": {
-          "consumerKey": "",
-          "consumerSecret": ""
+          "clientID": "",
+          "clientSecret": ""
         }
       },
       "linkedin": {
