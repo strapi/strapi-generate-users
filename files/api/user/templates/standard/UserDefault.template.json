@@ -2,11 +2,11 @@
   "default": {
     "attributes": {
       "username": {
-        "minLength": 8,
+        "minLength": 6,
         "required": true
       },
       "email": {
-        "minLength": 8,
+        "minLength": 6,
         "required": true
       }
     },
