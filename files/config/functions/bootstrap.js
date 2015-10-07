@@ -29,10 +29,12 @@ module.exports.bootstrap = function (cb) {
           cb();
         })
         .catch(function (err) {
-          console.log(err);
+          strapi.log.error(err);
+          cb(err);
         })
     })
     .catch(function (err) {
-      console.log(err);
+      strapi.log.error(err);
+      cb(err);
     });
 };
