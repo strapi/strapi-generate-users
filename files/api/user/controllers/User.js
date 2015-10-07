@@ -1,22 +1,24 @@
 'use strict';
 
 /**
- * A set of functions called users
+ * A set of functions called "actions" for `car`
  */
 
 module.exports = {
 
   /**
-   * Kind of router to create user entry
+   * Kind of router to create car entry
+   *
+   * @param {Object} this.request
    *
    * @return {Object}
    */
 
   create: function * () {
-    let params = this.request.body;
-    let controller = 'user';
+    var params = this.request.body;
+    var controller = 'car';
 
-    if (params.hasOwnProperty('template')) {
+    if (params.hasOwnProperty('template') && strapi.controllers[controller + params.template]) {
       controller += params.template;
     }
 
@@ -24,14 +26,16 @@ module.exports = {
   },
 
   /**
-   * Kind of router to get user entry/entries
+   * Kind of router to get car entry/entries
+   *
+   * @param {Object} this.request
    *
    * @return {Object|Array}
    */
 
   read: function * () {
-    let params = this.params;
-    let controller = 'user';
+    var params = this.params;
+    var controller = 'car';
 
     if (params.hasOwnProperty('template') && strapi.controllers[controller + params.template]) {
       controller += params.template;
@@ -41,16 +45,18 @@ module.exports = {
   },
 
   /**
-   * Kind of router to update user entry
+   * Kind of router to update car entry
+   *
+   * @param {Object} this.request
    *
    * @return {Object}
    */
 
   update: function * () {
-    let params = _.merge(this.request.body, this.params);
-    let controller = 'user';
+    var params = _.merge(this.request.body, this.params);
+    var controller = 'car';
 
-    if (params.hasOwnProperty('template')) {
+    if (params.hasOwnProperty('template') && strapi.controllers[controller + params.template]) {
       controller += params.template;
     }
 
@@ -58,16 +64,18 @@ module.exports = {
   },
 
   /**
-   * Kind of router to delete user entry
+   * Kind of router to delete car entry
+   *
+   * @param {Object} this.request
    *
    * @return {Object}
    */
 
   delete: function * () {
-    let params = _.merge(this.request.body, this.params);
-    let controller = 'user';
+    var params = _.merge(this.request.body, this.params);
+    var controller = 'car';
 
-    if (params.hasOwnProperty('template')) {
+    if (params.hasOwnProperty('template') && strapi.controllers[controller + params.template]) {
       controller += params.template;
     }
 
@@ -75,7 +83,7 @@ module.exports = {
   },
 
   /**
-   * Create user entry
+   * Create car entry
    *
    * @param {Object} scope
    * @param {Context} _ctx
@@ -84,7 +92,7 @@ module.exports = {
    */
 
   add: function * (scope, _ctx) {
-    let deferred = Promise.defer();
+    var deferred = Promise.defer();
 
     if (!scope) {
       if (_ctx) {
@@ -97,7 +105,7 @@ module.exports = {
     }
 
     User.create(scope)
-      .exec(function (err, user) {
+      .exec(function(err, car) {
         if (err) {
           if (_ctx) {
             _ctx.status = 400;
@@ -108,14 +116,14 @@ module.exports = {
           });
         }
 
-        deferred.resolve(user);
+        deferred.resolve(car);
       });
 
     return deferred.promise;
   },
 
   /**
-   * Get user entry if `id` is specified
+   * Get car entry if `id` is specified
    * or get entries with automatic pagination
    *
    * @param {Object} scope
@@ -125,7 +133,7 @@ module.exports = {
    */
 
   get: function * (scope, _ctx) {
-    let deferred = Promise.defer();
+    var deferred = Promise.defer();
 
     if (!scope) {
       if (_ctx) {
@@ -138,7 +146,7 @@ module.exports = {
     }
 
     User.find(scope)
-      .exec(function (err, user) {
+      .exec(function(err, car) {
         if (err) {
           if (_ctx) {
             _ctx.status = 400;
@@ -149,14 +157,14 @@ module.exports = {
           });
         }
 
-        deferred.resolve((scope && scope.id) ? user[0] : user);
+        deferred.resolve((scope && scope.id) ? car[0] : car);
       });
 
     return deferred.promise;
   },
 
   /**
-   * Edit user entry
+   * Edit car entry
    *
    * @param {Object} scope
    * @param {Context} _ctx
@@ -165,7 +173,7 @@ module.exports = {
    */
 
   edit: function * (scope, _ctx) {
-    let deferred = Promise.defer();
+    var deferred = Promise.defer();
 
     if (!scope || !scope.id) {
       if (_ctx) {
@@ -178,7 +186,7 @@ module.exports = {
     }
 
     User.update(scope.id, scope)
-      .exec(function (err, user) {
+      .exec(function(err, car) {
         if (err) {
           if (_ctx) {
             _ctx.status = 400;
@@ -189,14 +197,14 @@ module.exports = {
           });
         }
 
-        deferred.resolve(user);
+        deferred.resolve(car);
       });
 
     return deferred.promise;
   },
 
   /**
-   * Destroy user entry
+   * Destroy car entry
    *
    * @param {Object} scope
    * @param {Context} _ctx
@@ -205,7 +213,7 @@ module.exports = {
    */
 
   destroy: function * (scope, _ctx) {
-    let deferred = Promise.defer();
+    var deferred = Promise.defer();
 
     if (!scope || !scope.id) {
       if (_ctx) {
@@ -218,7 +226,7 @@ module.exports = {
     }
 
     User.destroy(scope.id)
-      .exec(function (err, user) {
+      .exec(function(err, car) {
         if (err) {
           if (_ctx) {
             _ctx.status = 400;
@@ -229,7 +237,7 @@ module.exports = {
           });
         }
 
-        deferred.resolve(user);
+        deferred.resolve(car);
       });
 
     return deferred.promise;
