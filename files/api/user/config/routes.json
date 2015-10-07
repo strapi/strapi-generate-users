@@ -35,6 +35,10 @@
         "isAuthorized"
       ]
     },
+    "POST /auth/changePassword": {
+      "controller": "User",
+      "action": "changePassword"
+    },
     "POST /auth/logout": {
       "controller": "Auth",
       "action": "logout"
