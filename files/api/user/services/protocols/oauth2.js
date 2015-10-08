@@ -4,9 +4,6 @@
  * Module dependencies
  */
 
-// Local utilities.
-const PassportService = require('../passport');
-
 /**
  * OAuth 2.0 Authentication Protocol
  *
@@ -39,5 +36,5 @@ module.exports = function (ctx, accessToken, refreshToken, profile, next) {
     query.tokens.refreshToken = refreshToken;
   }
 
-  PassportService.connect(ctx, query, profile, next);
+  strapi.modules.user.services.passport.connect(ctx, query, profile, next);
 };

@@ -27,10 +27,7 @@ module.exports = {
         return ctx.body = err || {};
       } else {
         ctx.status = 200;
-        ctx.body = {
-          jwt: strapi.api.user.services.jwt.issue(user),
-          user: user
-        };
+        ctx.redirect(strapi.config.frontendUrl || strapi.baseUrl + '?jwt=' + strapi.modules.user.services.jwt.issue(user) + '&user=' + JSON.stringify(user));
       }
     });
   },

@@ -28,8 +28,7 @@
         "protocol": "oauth2",
         "options": {
           "clientID": "",
-          "clientSecret": "",
-          "scope": "email"
+          "clientSecret": ""
         }
       },
       "linkedin": {
