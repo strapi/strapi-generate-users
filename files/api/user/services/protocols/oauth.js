@@ -1,10 +1,6 @@
 'use strict';
 
 /**
- * Module dependencies
- */
-
-/**
  * OAuth Authentication Protocol
  *
  * OAuth 1.0 is a delegated authentication strategy that involves multiple
@@ -37,5 +33,5 @@ module.exports = function oauth(ctx, token, tokenSecret, profile, next) {
     query.tokens.tokenSecret = tokenSecret;
   }
 
-  return strapi.modules.user.services.passport.connect(ctx, query, profile, next);
+  return strapi.api.user.services.passport.connect(ctx, query, profile, next);
 };

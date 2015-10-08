@@ -1,10 +1,6 @@
 'use strict';
 
 /**
- * Module dependencies
- */
-
-/**
  * OAuth 2.0 Authentication Protocol
  *
  * OAuth 2.0 is the successor to OAuth 1.0, and is designed to overcome
@@ -36,5 +32,5 @@ module.exports = function (ctx, accessToken, refreshToken, profile, next) {
     query.tokens.refreshToken = refreshToken;
   }
 
-  strapi.modules.user.services.passport.connect(ctx, query, profile, next);
+  strapi.api.user.services.passport.connect(ctx, query, profile, next);
 };
