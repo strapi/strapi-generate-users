@@ -10,7 +10,8 @@
       "type": "string"
     },
     "email": {
-      "type": "string"
+      "type": "string",
+      "email": true
     },
     "lang": {
       "type": "string",

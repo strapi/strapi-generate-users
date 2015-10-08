@@ -107,6 +107,15 @@ exports.create = function () {
       let roles = results.findRoles;
 
       const contributorVerbs = ['put', 'patch', 'delete'];
+      const userContributorRoutes = [
+        'GET /user/:id',
+        'PUT /user/:id',
+        'DELETE /user/:id'
+      ];
+      const userRegisteredRoutes = [
+        'PUT /user/:id',
+        'DELETE /user/:id'
+      ];
       let verb;
       let publicRole = _.find(roles, {name: 'public'});
       let contributorRole = _.find(roles, {name: 'contributor'});
@@ -115,16 +124,28 @@ exports.create = function () {
 
       _.forEach(newRoutesFound, function (newRoute) {
         if (!_.contains(newRoute.name, '/admin')) {
-          newRoute.roles.add(publicRole.id);
-          newRoute.roles.add(registeredRole.id);
-          newRoute.roles.add(adminRole.id);
 
           // Contributor permissions.
           verb = regex.detectRoute(newRoute.name).verb;
 
-          if (_.contains(contributorVerbs, verb) && !_.contains(newRoute.name, '/auth')) {
+          if (_.contains(newRoute.name, '/auth')) {
+            newRoute.roles.add(publicRole.id);
+          } else if (_.contains(newRoute.name, '/user')) {
+            if (_.contains(userContributorRoutes, newRoute.name)) {
+              newRoute.roles.add(contributorRole.id);
+            }
+            if (_.contains(userRegisteredRoutes, newRoute.name)) {
+              newRoute.roles.add(registeredRole.id);
+            }
+          } else {
+            if (verb === 'get') {
+              newRoute.roles.add(publicRole.id);
+              newRoute.roles.add(registeredRole.id);
+            }
             newRoute.roles.add(contributorRole.id);
           }
+
+          newRoute.roles.add(adminRole.id);
 
           promises.push(new Promise(function (resolve, reject) {
             newRoute.save(function (err) {

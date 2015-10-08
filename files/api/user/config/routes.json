@@ -14,13 +14,6 @@
         "isAuthorized"
       ]
     },
-    "POST /user": {
-      "controller": "User",
-      "action": "create",
-      "policies": [
-        "isAuthorized"
-      ]
-    },
     "PUT /user/:id": {
       "controller": "User",
       "action": "update",
