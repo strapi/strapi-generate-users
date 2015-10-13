@@ -220,7 +220,7 @@ passport.loadStrategies = function loadStrategies() {
       let callback = strategy.callback;
 
       if (!callback) {
-        callback = path.join('auth', key, 'callback');
+        callback = path.join(strapi.config.prefix, 'auth', key, 'callback');
       }
 
       if (key === 'google') {
