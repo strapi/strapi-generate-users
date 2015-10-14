@@ -53,6 +53,11 @@ passport.connect = function connect(ctx, query, profile, next) {
   // Set the authentication provider.
   query.provider = profile.provider;
 
+  // If the profile object contains an email, add it to the user.
+  if (profile.hasOwnProperty('email')) {
+    user.email = profile.email;
+  }
+
   // If the profile object contains a list of emails, grab the first one and add it to the user.
   if (profile.hasOwnProperty('emails')) {
     user.email = profile.emails[0].value;
