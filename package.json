@@ -19,7 +19,6 @@
     "jsonwebtoken": "^5.4.0",
     "lodash": "^3.10.1",
     "nodemailer": "^1.7.0",
-    "passport": "^0.3.0",
     "passport-facebook": "^2.0.0",
     "passport-github": "^1.0.0",
     "passport-google-oauth": "^0.2.0",
