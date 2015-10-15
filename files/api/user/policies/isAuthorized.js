@@ -47,7 +47,7 @@ exports.isAuthorized = function * (next) {
   }
 
   // Check if this route is public.
-  if (_.find(route.roles, {name: 'public'})) {
+  if (route.isPublic === true) {
     return yield next;
   }
 
