@@ -117,7 +117,6 @@ exports.create = function () {
         'DELETE /user/:id'
       ];
       let verb;
-      let publicRole = _.find(roles, {name: 'public'});
       let contributorRole = _.find(roles, {name: 'contributor'});
       let registeredRole = _.find(roles, {name: 'registered'});
       let adminRole = _.find(roles, {name: 'admin'});
@@ -127,9 +126,10 @@ exports.create = function () {
 
           // Contributor permissions.
           verb = regex.detectRoute(newRoute.name).verb;
+          newRoute.isPublic = false;
 
           if (_.contains(newRoute.name, '/auth')) {
-            newRoute.roles.add(publicRole.id);
+            newRoute.isPublic = true;
           } else if (_.contains(newRoute.name, '/user')) {
             if (_.contains(userContributorRoutes, newRoute.name)) {
               newRoute.roles.add(contributorRole.id);
@@ -139,7 +139,7 @@ exports.create = function () {
             }
           } else {
             if (verb === 'get') {
-              newRoute.roles.add(publicRole.id);
+              newRoute.isPublic = true;
               newRoute.roles.add(registeredRole.id);
             }
             newRoute.roles.add(contributorRole.id);
