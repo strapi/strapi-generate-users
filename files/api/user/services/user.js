@@ -37,12 +37,12 @@ module.exports = {
     const authorizedRoles = _.isArray(route.roles) ? _.map(route.roles, 'name') : [];
 
     // Registered
-    if (user.id && _.contains(authorizedRoles, 'registered')) {
+    if (user.id && route.registeredAuthorized === true) {
       return isAuthorized = true;
     }
 
     // Owner policy.
-    if (ctx.request.route.controller && _.find(authorizedRoles, 'contributor')) {
+    if (ctx.request.route.controller && route.contributorsAuthorized === true) {
       entry = yield strapi.orm.collections[ctx.request.route.controller].findOne(ctx.params.id).populate('contributors');
 
       if (entry && entry.contributors && ctx.user && ctx.user.id) {
@@ -55,7 +55,7 @@ module.exports = {
 
     for (let i = 0; i < user.roles.length; i++) {
       let userRole = user.roles[i].name;
-      if (userRole && _.contains(authorizedRoles, userRole) && userRole !== 'owner') {
+      if (userRole && _.contains(authorizedRoles, userRole)) {
         isAuthorized = true;
         break;
       }
