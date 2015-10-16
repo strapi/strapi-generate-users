@@ -8,6 +8,9 @@
     "name": {
       "type": "string"
     },
+    "policies": {
+      "type": "array"
+    },
     "controller": {
       "type": "string"
     },
@@ -15,7 +18,16 @@
       "type": "string"
     },
     "isPublic": {
-      "type": "boolean"
+      "type": "boolean",
+      "defaultsTo": false
+    },
+    "registeredAuthorized": {
+      "type": "boolean",
+      "defaultsTo": false
+    },
+    "contributorsAuthorized": {
+      "type": "boolean",
+      "defaultsTo": false
     },
     "roles": {
       "collection": "role",

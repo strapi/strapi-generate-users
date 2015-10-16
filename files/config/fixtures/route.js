@@ -59,6 +59,7 @@ exports.create = function () {
             name: key
           }, {
             name: key,
+            policies: route.policies,
             controller: route.controller,
             action: route.action
           }));
@@ -66,6 +67,7 @@ exports.create = function () {
           newRoutes.push(key);
           promises.push(strapi.orm.collections.route.create({
             name: key,
+            policies: route.policies,
             controller: route.controller,
             action: route.action
           }));
@@ -127,22 +129,24 @@ exports.create = function () {
           // Contributor permissions.
           verb = regex.detectRoute(newRoute.name).verb;
           newRoute.isPublic = false;
+          newRoute.registeredAuthorized = false;
+          newRoute.contributorsAuthorized = false;
 
           if (_.contains(newRoute.name, '/auth')) {
             newRoute.isPublic = true;
           } else if (_.contains(newRoute.name, '/user')) {
             if (_.contains(userContributorRoutes, newRoute.name)) {
-              newRoute.roles.add(contributorRole.id);
+              newRoute.contributorsAuthorized = true;
             }
             if (_.contains(userRegisteredRoutes, newRoute.name)) {
-              newRoute.roles.add(registeredRole.id);
+              newRoute.registeredAuthorized = true;
             }
           } else {
             if (verb === 'get') {
               newRoute.isPublic = true;
-              newRoute.roles.add(registeredRole.id);
+              newRoute.registeredAuthorized = true;
             }
-            newRoute.roles.add(contributorRole.id);
+            newRoute.contributorsAuthorized = true;
           }
 
           newRoute.roles.add(adminRole.id);
