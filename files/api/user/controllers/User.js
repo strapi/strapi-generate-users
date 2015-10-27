@@ -64,46 +64,6 @@ module.exports = {
   },
 
   /**
-   * Create user entry
-   *
-   * @param {Object} scope
-   * @param {Context} _ctx
-   *
-   * @return {Promise*Object}
-   */
-
-  add: function * (scope, _ctx) {
-    var deferred = Promise.defer();
-
-    if (!scope) {
-      if (_ctx) {
-        _ctx.status = 400;
-      }
-
-      deferred.resolve({
-        error: 'You can\'t add undefined record'
-      });
-    }
-
-    User.create(scope)
-      .exec(function(err, user) {
-        if (err) {
-          if (_ctx) {
-            _ctx.status = 400;
-          }
-
-          deferred.resolve({
-            error: err
-          });
-        }
-
-        deferred.resolve(user);
-      });
-
-    return deferred.promise;
-  },
-
-  /**
    * Get user entry if `id` is specified
    * or get entries with automatic pagination
    *
