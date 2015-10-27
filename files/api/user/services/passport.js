@@ -258,24 +258,4 @@ passport.loadStrategies = function loadStrategies() {
   });
 };
 
-/**
- * Serialize user.
- */
-
-passport.serializeUser(function serializeUser(user, next) {
-  if (!user) {
-    next({message: 'Invalid user.'}, null);
-  } else {
-    next(null, user.id);
-  }
-});
-
-/**
- * Deserialize user.
- */
-
-passport.deserializeUser(function deserializeUser(id, next) {
-  User.findOne(id, next);
-});
-
 module.exports = passport;
