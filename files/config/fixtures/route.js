@@ -124,7 +124,7 @@ exports.create = function () {
       let adminRole = _.find(roles, {name: 'admin'});
 
       _.forEach(newRoutesFound, function (newRoute) {
-        if (!_.contains(newRoute.name, '/admin')) {
+        if (!_.contains(newRoute.name, '/dashboard')) {
 
           // Contributor permissions.
           verb = regex.detectRoute(newRoute.name).verb;
