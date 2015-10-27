@@ -24,7 +24,7 @@ module.exports = {
     yield strapi.api.user.services.passport.callback(this, function (err, user) {
       if (err || !user) {
         ctx.status = 400;
-        return ctx.body = err || {};
+        return ctx.body = err.message || {};
       } else {
         ctx.status = 200;
         if (_.contains(ctx.originalUrl, 'local')) {
