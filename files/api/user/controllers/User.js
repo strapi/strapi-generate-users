@@ -7,25 +7,6 @@
 module.exports = {
 
   /**
-   * Kind of router to create user entry
-   *
-   * @param {Object} this.request
-   *
-   * @return {Object}
-   */
-
-  create: function * () {
-    var params = this.request.body;
-    var controller = 'user';
-
-    if (params.hasOwnProperty('template') && strapi.controllers[controller + params.template]) {
-      controller += params.template;
-    }
-
-    this.body = yield strapi.controllers[controller].add(params, this);
-  },
-
-  /**
    * Kind of router to get user entry/entries
    *
    * @param {Object} this.request

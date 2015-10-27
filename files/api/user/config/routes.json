@@ -18,7 +18,8 @@
       "controller": "User",
       "action": "update",
       "policies": [
-        "isAuthorized"
+        "isAuthorized",
+        "deleteRoles"
       ]
     },
     "DELETE /user/:id": {
