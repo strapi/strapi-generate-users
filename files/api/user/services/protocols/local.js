@@ -91,14 +91,12 @@ exports.register = function * (ctx) {
  * found, its password is checked against the password supplied in the form.
  *
  * @param {Object}   ctx
+ * @param {String}   identifier
+ * @param {String}   password
+ * @param {Function} next
  */
 
-exports.login = function * (ctx) {
-  const deferred = Promise.defer();
-
-  // Format params and init variables.
-  const params = _.merge({}, ctx.params, ctx.request.body, ctx.request.query);
-  const identifier = params.identifier;
+exports.login = function (ctx, identifier, password, next) {
   let query = {};
 
   // Check if the provided identifier is an email or not.
@@ -114,45 +112,48 @@ exports.login = function * (ctx) {
   }
 
   // The identifier is required.
-  if (!params.identifier) {
-    return deferred.reject('Please provide your username or your e-mail.');
+  if (!identifier) {
+    return next(new Error('Please provide your username or your e-mail.'));
   }
 
   // The password is required.
-  if (!params.password) {
-    return deferred.reject('Please provide your password.');
+  if (!password) {
+    return next(new Error('Please provide your password.'));
   }
 
   // Check if the user exists.
-  try {
-    const user = yield User.findOne(query);
+  User.findOne(query, function (err, user) {
+    if (err) {
+      return next(err);
+    }
 
     if (!user) {
-      deferred.reject('Identifier or password invalid.');
-    } else {
-      const passport = yield Passport.findOne({
-        protocol: 'local',
-        user: user.id
-      });
-
-      // Check id the password is valid.
-      if (passport) {
-        passport.validatePassword(params.password, function callback(err, response) {
-          if (err) {
-            deferred.reject(err);
-          } else if (!response) {
-            deferred.reject('Identifier or password invalid.');
-          } else {
-            deferred.resolve(user);
-          }
-        });
-      } else {
-        deferred.reject('No local passport linked with this identifier.');
-      }
+      return next(new Error('Identifier or password invalid.'));
     }
-  } catch(err) {
-    deferred.reject(err);
-  }
 
-  return deferred.promise;
+    Passport.findOne({
+      protocol: 'local',
+      user: user.id
+    }, function (err, passport) {
+      if (err) {
+        return next(err);
+      }
+
+      if (!passport) {
+        return next('No local passport linked with this identifier.');
+      }
+
+      passport.validatePassword(password, function (err, response) {
+        if (err) {
+          return next(err);
+        }
+
+        if (!response) {
+          return next(new Error('Identifier or password invalid.'));
+        }
+
+        next(null, user);
+      });
+    });
+  });
 };

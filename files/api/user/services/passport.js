@@ -167,31 +167,22 @@ passport.callback = function * (ctx, next) {
   const provider = params.provider || 'local';
   const action = params.action || 'connect';
 
-  if (provider === 'local' && action !== undefined) {
-    if (action === 'register') {
-      try {
-        let user = yield passport.protocols.local.register(ctx);
-        next(null, user);
-      } catch (err) {
-        next(err);
-      }
-    } else if (action === 'connect') {
-      try {
-        let user = yield passport.protocols.local.login(ctx);
-        next(null, user);
-      } catch (err) {
-        next(err);
-      }
-    } else {
-      next(new Error('Invalid action'));
+  if (provider === 'local' && action === 'register') {
+    try {
+      let user = yield passport.protocols.local.register(ctx);
+      next(null, user);
+    } catch (err) {
+      next(err);
     }
-  } else {
+  } else if (action === 'connect') {
     yield passport.authenticate(ctx.params.provider, function * (err, user) {
       if (err) {
         return next(err);
       }
       next(null, user);
     });
+  } else {
+    next(new Error('Invalid action'));
   }
 };
 
@@ -200,7 +191,6 @@ passport.callback = function * (ctx, next) {
  */
 
 passport.loadStrategies = function loadStrategies() {
-  const self = this;
   const strategies = strapi.config.passport.strategies;
 
   _.forEach(strategies, function (strategy, key) {
@@ -212,14 +202,12 @@ passport.loadStrategies = function loadStrategies() {
 
     if (key === 'local') {
       _.extend(options, {
-        usernameField: 'identifier'
+        usernameField: 'identifier',
+        session: false
       });
 
-      // Only load the local strategy if it's enabled in the config.
-      if (strategies.local) {
-        Strategy = require(strategy.strategy).Strategy;
-        self.use(new Strategy(options, passport.protocols.local.login));
-      }
+      Strategy = require(strategy.strategy).Strategy;
+      passport.use(new Strategy(options, passport.protocols.local.login));
     } else if (strategy.options && (strategy.options.consumerKey || strategy.options.clientID)) {
       let protocol = strategy.protocol;
       let callback = strategy.callback;
@@ -231,7 +219,7 @@ passport.loadStrategies = function loadStrategies() {
       if (key === 'google') {
         Strategy = require('passport-google-oauth').OAuth2Strategy;
       } else {
-        Strategy = require(strategies[key].strategy).Strategy;
+        Strategy = require(strategy.strategy).Strategy;
       }
 
       let baseUrl = strapi.config.url;
@@ -253,7 +241,7 @@ passport.loadStrategies = function loadStrategies() {
       // do that.
       _.extend(options, strategies[key].options);
 
-      self.use(new Strategy(options, self.protocols[protocol]));
+      passport.use(new Strategy(options, passport.protocols[protocol]));
     }
   });
 };
