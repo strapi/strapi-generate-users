@@ -23,7 +23,8 @@
     "passport-google-oauth": "^0.2.0",
     "passport-linkedin": "^1.0.0",
     "passport-local": "^1.0.0",
-    "passport-twitter": "^1.0.3"
+    "passport-twitter": "^1.0.3",
+    "regex": "^0.1.1"
   },
   "devDependencies": {
     "xo": "^0.10.0"

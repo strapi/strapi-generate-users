@@ -6,8 +6,6 @@
 
 // Public node modules
 const async = require('async');
-
-// Local utilities.
 const regex = require('regex');
 
 /**
