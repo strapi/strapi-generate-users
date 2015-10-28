@@ -167,31 +167,22 @@ passport.callback = function * (ctx, next) {
   const provider = params.provider || 'local';
   const action = params.action || 'connect';
 
-  if (provider === 'local' && action !== undefined) {
-    if (action === 'register') {
-      try {
-        let user = yield passport.protocols.local.register(ctx);
-        next(null, user);
-      } catch (err) {
-        next(err);
-      }
-    } else if (action === 'connect') {
-      try {
-        let user = yield passport.protocols.local.login(ctx);
-        next(null, user);
-      } catch (err) {
-        next(err);
-      }
-    } else {
-      next(new Error('Invalid action'));
+  if (provider === 'local' && action === 'register') {
+    try {
+      const user = yield passport.protocols.local.register(ctx);
+      next(null, user);
+    } catch (err) {
+      next(err);
     }
-  } else {
-    yield passport.authenticate(ctx.params.provider, function * (err, user) {
+  } else if (action === 'connect') {
+    yield passport.authenticate(ctx.params.provider, {session: false}, function * (err, user) {
       if (err) {
         return next(err);
       }
       next(null, user);
     });
+  } else {
+    next(new Error('Invalid action'));
   }
 };
 
@@ -200,11 +191,10 @@ passport.callback = function * (ctx, next) {
  */
 
 passport.loadStrategies = function loadStrategies() {
-  const self = this;
   const strategies = strapi.config.passport.strategies;
 
   _.forEach(strategies, function (strategy, key) {
-    let options = {
+    const options = {
       passReqToCallback: true
     };
 
@@ -212,16 +202,14 @@ passport.loadStrategies = function loadStrategies() {
 
     if (key === 'local') {
       _.extend(options, {
-        usernameField: 'identifier'
+        usernameField: 'identifier',
+        session: false
       });
 
-      // Only load the local strategy if it's enabled in the config.
-      if (strategies.local) {
-        Strategy = require(strategy.strategy).Strategy;
-        self.use(new Strategy(options, passport.protocols.local.login));
-      }
+      Strategy = require(strategy.strategy).Strategy;
+      passport.use(new Strategy(options, passport.protocols.local.login));
     } else if (strategy.options && (strategy.options.consumerKey || strategy.options.clientID)) {
-      let protocol = strategy.protocol;
+      const protocol = strategy.protocol;
       let callback = strategy.callback;
 
       if (!callback) {
@@ -231,10 +219,10 @@ passport.loadStrategies = function loadStrategies() {
       if (key === 'google') {
         Strategy = require('passport-google-oauth').OAuth2Strategy;
       } else {
-        Strategy = require(strategies[key].strategy).Strategy;
+        Strategy = require(strategy.strategy).Strategy;
       }
 
-      let baseUrl = strapi.config.url;
+      const baseUrl = strapi.config.url;
 
       switch (protocol) {
         case 'oauth':
@@ -253,29 +241,9 @@ passport.loadStrategies = function loadStrategies() {
       // do that.
       _.extend(options, strategies[key].options);
 
-      self.use(new Strategy(options, self.protocols[protocol]));
+      passport.use(new Strategy(options, passport.protocols[protocol]));
     }
   });
 };
-
-/**
- * Serialize user.
- */
-
-passport.serializeUser(function serializeUser(user, next) {
-  if (!user) {
-    next({message: 'Invalid user.'}, null);
-  } else {
-    next(null, user.id);
-  }
-});
-
-/**
- * Deserialize user.
- */
-
-passport.deserializeUser(function deserializeUser(id, next) {
-  User.findOne(id, next);
-});
 
 module.exports = passport;
