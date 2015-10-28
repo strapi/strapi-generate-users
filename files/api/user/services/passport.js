@@ -169,7 +169,7 @@ passport.callback = function * (ctx, next) {
 
   if (provider === 'local' && action === 'register') {
     try {
-      let user = yield passport.protocols.local.register(ctx);
+      const user = yield passport.protocols.local.register(ctx);
       next(null, user);
     } catch (err) {
       next(err);
@@ -194,7 +194,7 @@ passport.loadStrategies = function loadStrategies() {
   const strategies = strapi.config.passport.strategies;
 
   _.forEach(strategies, function (strategy, key) {
-    let options = {
+    const options = {
       passReqToCallback: true
     };
 
@@ -209,7 +209,7 @@ passport.loadStrategies = function loadStrategies() {
       Strategy = require(strategy.strategy).Strategy;
       passport.use(new Strategy(options, passport.protocols.local.login));
     } else if (strategy.options && (strategy.options.consumerKey || strategy.options.clientID)) {
-      let protocol = strategy.protocol;
+      const protocol = strategy.protocol;
       let callback = strategy.callback;
 
       if (!callback) {
@@ -222,7 +222,7 @@ passport.loadStrategies = function loadStrategies() {
         Strategy = require(strategy.strategy).Strategy;
       }
 
-      let baseUrl = strapi.config.url;
+      const baseUrl = strapi.config.url;
 
       switch (protocol) {
         case 'oauth':

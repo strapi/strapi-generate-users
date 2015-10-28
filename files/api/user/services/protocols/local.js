@@ -97,7 +97,7 @@ exports.register = function * (ctx) {
  */
 
 exports.login = function (ctx, identifier, password, next) {
-  let query = {};
+  const query = {};
 
   // Check if the provided identifier is an email or not.
   const isEmail = !anchor(identifier).to({
