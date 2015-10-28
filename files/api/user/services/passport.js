@@ -175,7 +175,7 @@ passport.callback = function * (ctx, next) {
       next(err);
     }
   } else if (action === 'connect') {
-    yield passport.authenticate(ctx.params.provider, function * (err, user) {
+    yield passport.authenticate(ctx.params.provider, {session: false}, function * (err, user) {
       if (err) {
         return next(err);
       }
