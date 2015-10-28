@@ -43,7 +43,7 @@ exports.isAuthorized = function * (next) {
     this.status = 404;
     return this.body = {
       message: 'Route not found'
-    }
+    };
   }
 
   // Check if this route is public.

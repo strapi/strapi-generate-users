@@ -15,8 +15,8 @@ module.exports = {
    */
 
   read: function * () {
-    var params = this.params;
-    var controller = 'user';
+    const params = this.params;
+    let controller = 'user';
 
     if (params.hasOwnProperty('template') && strapi.controllers[controller + params.template]) {
       controller += params.template;
@@ -34,8 +34,8 @@ module.exports = {
    */
 
   update: function * () {
-    var params = _.merge(this.request.body, this.params);
-    var controller = 'user';
+    const params = _.merge(this.request.body, this.params);
+    let controller = 'user';
 
     if (params.hasOwnProperty('template') && strapi.controllers[controller + params.template]) {
       controller += params.template;
@@ -53,8 +53,8 @@ module.exports = {
    */
 
   delete: function * () {
-    var params = _.merge(this.request.body, this.params);
-    var controller = 'user';
+    const params = _.merge(this.request.body, this.params);
+    let controller = 'user';
 
     if (params.hasOwnProperty('template') && strapi.controllers[controller + params.template]) {
       controller += params.template;
@@ -74,7 +74,7 @@ module.exports = {
    */
 
   get: function * (scope, _ctx) {
-    var deferred = Promise.defer();
+    const deferred = Promise.defer();
 
     if (!scope) {
       if (_ctx) {
@@ -82,12 +82,12 @@ module.exports = {
       }
 
       deferred.resolve({
-        error: "You can't read undefined record"
+        error: 'You can\'t read undefined record'
       });
     }
 
     User.find(scope)
-      .exec(function(err, user) {
+      .exec(function (err, user) {
         if (err) {
           if (_ctx) {
             _ctx.status = 400;
@@ -114,7 +114,7 @@ module.exports = {
    */
 
   edit: function * (scope, _ctx) {
-    var deferred = Promise.defer();
+    const deferred = Promise.defer();
 
     if (!scope || !scope.id) {
       if (_ctx) {
@@ -127,7 +127,7 @@ module.exports = {
     }
 
     User.update(scope.id, scope)
-      .exec(function(err, user) {
+      .exec(function (err, user) {
         if (err) {
           if (_ctx) {
             _ctx.status = 400;
@@ -154,7 +154,7 @@ module.exports = {
    */
 
   destroy: function * (scope, _ctx) {
-    var deferred = Promise.defer();
+    const deferred = Promise.defer();
 
     if (!scope || !scope.id) {
       if (_ctx) {
@@ -167,7 +167,7 @@ module.exports = {
     }
 
     User.destroy(scope.id)
-      .exec(function(err, user) {
+      .exec(function (err, user) {
         if (err) {
           if (_ctx) {
             _ctx.status = 400;
@@ -192,7 +192,7 @@ module.exports = {
 
   changePassword: function * () {
     // Init variables.
-    let params = _.assign({}, this.request.body, this.params);
+    const params = _.assign({}, this.request.body, this.params);
     let passport;
 
     if (params.password && params.password && params.password === params.passwordConfirmation && params.code) {
@@ -223,7 +223,7 @@ module.exports = {
 
           if (passport.user) {
             // Issue a new token
-            let token = strapi.api.user.services.jwt.issue(passport.user);
+            const token = strapi.api.user.services.jwt.issue(passport.user);
 
             // Send the response
             this.body = {
@@ -234,7 +234,7 @@ module.exports = {
             this.status = 400;
             this.body = {
               message: 'User not found.'
-            }
+            };
           }
         } catch (err) {
           this.status = 400;

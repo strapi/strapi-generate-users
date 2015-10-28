@@ -1,3 +1,19 @@
+'use strict';
+
+/**
+ * Module dependencies
+ */
+
+// Node.js core.
+const path = require('path');
+
+// Public node modules.
+const _ = require('lodash');
+const anchor = require('anchor');
+
+// Model settings
+const settings = require('./User.settings.json');
+
 /**
  * User model
  *
@@ -5,23 +21,6 @@
  * We advise you to no put connection, schema and attributes
  * in this file aiming to update the model from the UI.
  */
-
-/**
- * Module dependencies
- */
-
-// Node.js core.
-var fs = require('fs');
-var path = require('path');
-
-// Public node modules.
-var _ = require('lodash');
-var anchor = require('anchor');
-var Waterline = require('waterline');
-
-// Model settings
-var settings = require('./User.settings.json');
-
 
 module.exports = {
 
@@ -51,7 +50,7 @@ module.exports = {
   autoUpdatedAt: settings.autoUpdatedAt,
 
   // Lifecycle callbacks
-  beforeValidate: function(values, next) {
+  beforeValidate: function (values, next) {
     /**
      * Handle Anchor validations to consider our templates system
      *
@@ -66,17 +65,17 @@ module.exports = {
       values.template = template;
 
       // Merge model type with template validations
-      var templateAttributes = _.merge(_.pick(strapi.models[module].attributes, 'lang'), strapi.api[module].templates[template].attributes);
-      var err = [];
+      const templateAttributes = _.merge(_.pick(strapi.models[module].attributes, 'lang'), strapi.api[module].templates[template].attributes);
+      const err = [];
 
-      _.forEach(templateAttributes, function(rules, key){
-        if(values.hasOwnProperty(key) || key === 'lang') {
+      _.forEach(templateAttributes, function (rules, key) {
+        if (values.hasOwnProperty(key) || key === 'lang') {
           if (key === 'lang') {
             // Set lang with correct value
             values[key] = _.includes(strapi.config.i18n.locales, values[key]) ? values[key] : strapi.config.i18n.defaultLocale;
           } else {
             // Check validations
-            var rulesTest = anchor(values[key]).to(rules);
+            const rulesTest = anchor(values[key]).to(rules);
 
             if (rulesTest) {
               err.push(rulesTest[0]);
@@ -84,8 +83,8 @@ module.exports = {
           }
         } else {
           rules.required && err.push({
-            rule: "required",
-            message: "Missing attributes " + key
+            rule: 'required',
+            message: 'Missing attributes ' + key
           });
         }
       });

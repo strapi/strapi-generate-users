@@ -8,7 +8,7 @@ exports.hasRole = function *(next) {
 
   // The user object is in the context thanks to
   // the `authenticated` policy
-  let userId = this.user.id;
+  const userId = this.user.id;
 
   // Check if the user is authenticated.
   if (!userId) {
@@ -24,7 +24,7 @@ exports.hasRole = function *(next) {
   }
 
   // Find the current route and its authorized roles.
-  let route = yield Route.findOne({
+  const route = yield Route.findOne({
     name: this.request.endpoint
   }).populate('roles');
 
@@ -33,7 +33,7 @@ exports.hasRole = function *(next) {
     this.status = 404;
     return this.body = {
       message: 'Route not found'
-    }
+    };
   }
 
   // Check if this route is public.
@@ -42,14 +42,14 @@ exports.hasRole = function *(next) {
   }
 
   // Find the current user with its related roles.
-  let user = yield User.findOne(userId).populate('roles');
+  const user = yield User.findOne(userId).populate('roles');
 
   // User not found.
   if (!user) {
     this.status = 404;
     return this.body = {
       message: 'User not found'
-    }
+    };
   }
 
   // Final check.

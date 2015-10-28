@@ -8,16 +8,16 @@
 const async = require('async');
 
 // Local utilities.
-const regex = require('../../node_modules/strapi/util/regex');
+const regex = require('regex');
 
 /**
  * Creates Routes
  */
 
 exports.create = function () {
-  let deferred = Promise.defer();
-  let promises = [];
-  let newRoutes = [];
+  const deferred = Promise.defer();
+  const promises = [];
+  const newRoutes = [];
   let routesFound;
 
   async.auto({
@@ -33,7 +33,7 @@ exports.create = function () {
           } else {
             callback(null, routesFound);
           }
-        })
+        });
     },
     deleteRoutes: ['findRoutes', function (callback, results) {
       // Async dependencies.
@@ -105,23 +105,25 @@ exports.create = function () {
     }],
     updateCreatedRoutes: ['execRoutesModifications', 'findNewRoutes', 'findRoles', function (callback, results) {
       // Async dependencies.
-      let newRoutesFound = results.findNewRoutes;
-      let roles = results.findRoles;
+      const newRoutesFound = results.findNewRoutes;
+      const roles = results.findRoles;
 
-      const contributorVerbs = ['put', 'patch', 'delete'];
       const userContributorRoutes = [
         'GET /user/:id',
         'PUT /user/:id',
         'DELETE /user/:id'
       ];
+
       const userRegisteredRoutes = [
         'PUT /user/:id',
         'DELETE /user/:id'
       ];
+
       let verb;
-      let contributorRole = _.find(roles, {name: 'contributor'});
-      let registeredRole = _.find(roles, {name: 'registered'});
-      let adminRole = _.find(roles, {name: 'admin'});
+
+      const adminRole = _.find(roles, {
+        name: 'admin'
+      });
 
       _.forEach(newRoutesFound, function (newRoute) {
         if (!_.contains(newRoute.name, '/dashboard')) {
@@ -184,7 +186,7 @@ exports.create = function () {
           } else {
             callback(null, roles);
           }
-        })
+        });
     }]
   }, function cb(err, results) {
     if (err) {

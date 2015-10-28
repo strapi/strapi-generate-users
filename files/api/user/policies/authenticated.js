@@ -1,13 +1,6 @@
 'use strict';
 
 /**
- * Module dependencies
- */
-
-// Public node modules.
-const _ = require('lodash');
-
-/**
  * Authenticated policy
  */
 
@@ -15,7 +8,7 @@ exports.authenticated = function *(next) {
 
   // Get and verify JWT via service.
   try {
-    let user = yield strapi.api.user.services.jwt.getToken(this, true);
+    const user = yield strapi.api.user.services.jwt.getToken(this, true);
 
     // Store user id to request object.
     this.user = yield User.findOne(user.id).populate('roles');

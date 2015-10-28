@@ -79,17 +79,19 @@ module.exports = {
     }
 
     // Generate random code.
-    let code = crypto.randomBytes(64).toString('hex');
+    const code = crypto.randomBytes(64).toString('hex');
 
     // Select the local passport of the user.
-    let localPassport = _.find(user.passports, {protocol: 'local'});
+    const localPassport = _.find(user.passports, {
+      protocol: 'local'
+    });
 
     // The user never registered using the local auth system.
     if (!localPassport) {
       this.status = 404;
       return this.body = {
         message: 'It looks like you never logged in with a classic authentification. Please log in using your usual login system.'
-      }
+      };
     }
 
     // Set the property code of the local passport.
@@ -112,7 +114,7 @@ module.exports = {
       this.status = 500;
       this.body = {
         message: 'Error sending the email'
-      }
+      };
     }
   }
 };

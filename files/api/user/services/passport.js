@@ -48,7 +48,7 @@ passport.protocols = require('./protocols');
  */
 
 passport.connect = function connect(ctx, query, profile, next) {
-  let user = {};
+  const user = {};
 
   // Set the authentication provider.
   query.provider = profile.provider;
@@ -106,7 +106,7 @@ passport.connect = function connect(ctx, query, profile, next) {
                         if (err) {
                           return next(err);
                         }
-                        next(null, user)
+                        next(null, user);
                       });
                   }
                 });

@@ -54,7 +54,7 @@ module.exports = {
     }
 
     for (let i = 0; i < user.roles.length; i++) {
-      let userRole = user.roles[i].name;
+      const userRole = user.roles[i].name;
       if (userRole && _.contains(authorizedRoles, userRole)) {
         isAuthorized = true;
         break;

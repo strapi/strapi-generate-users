@@ -1,13 +1,6 @@
 'use strict';
 
 /**
- * Module dependencies
- */
-
-// Public node modules
-const _ = require('lodash');
-
-/**
  * An asynchronous bootstrap function that runs before
  * your application gets lifted.
  *
@@ -31,7 +24,7 @@ module.exports.bootstrap = function (cb) {
         .catch(function (err) {
           strapi.log.error(err);
           cb(err);
-        })
+        });
     })
     .catch(function (err) {
       strapi.log.error(err);
