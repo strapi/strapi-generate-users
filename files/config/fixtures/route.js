@@ -6,7 +6,7 @@
 
 // Public node modules
 const async = require('async');
-const regex = require('regex');
+const regex = require('../../node_modules/strapi/util/regex');
 
 /**
  * Creates Routes
