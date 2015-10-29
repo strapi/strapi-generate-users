@@ -1,12 +1,14 @@
 'use strict';
 
 /**
- * Module dependencies
+ * Module dependencies.
  */
 
-// Public node modules
+// Public node modules.
 const async = require('async');
-const regex = require('regex');
+
+// Local dependencies.
+const regex = require('../../node_modules/strapi/util/regex');
 
 /**
  * Creates Routes
