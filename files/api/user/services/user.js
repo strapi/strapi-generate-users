@@ -46,6 +46,7 @@ module.exports = {
       entry = yield strapi.orm.collections[ctx.request.route.controller].findOne(ctx.params.id).populate('contributors');
 
       if (entry && entry.contributors && ctx.user && ctx.user.id) {
+
         // The authenticated user is a contributor.
         return isAuthorized = _.find(entry.contributors, {id: ctx.user.id});
       } else {

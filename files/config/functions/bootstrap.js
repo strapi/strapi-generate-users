@@ -10,7 +10,7 @@
 
 module.exports.bootstrap = function (cb) {
   const passport = strapi.api.user.services.passport;
-  const fixtures = require('../fixtures/index');
+  const fixtures = require('../../api/user/config/fixtures/index');
 
   passport.loadStrategies();
 

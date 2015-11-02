@@ -21,6 +21,10 @@ const settings = require('./Passport.settings.json');
 
 module.exports = {
 
+  /**
+   * Basic settings
+   */
+
   // The identity to use.
   identity: settings.identity,
 
@@ -44,12 +48,16 @@ module.exports = {
   autoCreatedAt: settings.autoCreatedAt,
   autoUpdatedAt: settings.autoUpdatedAt,
 
-  // BeforeCreate
+  /**
+   * Lifecycle callbacks
+   */
+
+  // Before create.
   beforeCreate: function (passport, next) {
     hashPassword(passport, next);
   },
 
-  // BeforeUpdate
+  // Before update.
   beforeUpdate: function (passport, next) {
     hashPassword(passport, next);
   }

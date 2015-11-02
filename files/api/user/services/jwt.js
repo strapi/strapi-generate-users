@@ -18,7 +18,7 @@ const jwt = require('jsonwebtoken');
 exports.issue = function (payload) {
   return jwt.sign(
     payload,
-    process.env.JWT_SECRET || strapi.config.users.jwtSecret || 'oursecret'
+    process.env.JWT_SECRET || strapi.api.users.config.jwtSecret || 'oursecret'
   );
 };
 
@@ -35,7 +35,7 @@ exports.verify = function (token) {
 
   jwt.verify(
     token,
-    process.env.JWT_SECRET || strapi.config.users.jwtSecret || 'oursecret',
+    process.env.JWT_SECRET || strapi.api.users.config.jwtSecret || 'oursecret',
     {},
     function (err, user) {
       if (err || !user || !user.id) {
