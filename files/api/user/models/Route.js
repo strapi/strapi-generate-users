@@ -16,6 +16,10 @@ const settings = require('./Route.settings.json');
 
 module.exports = {
 
+  /**
+   * Basic settings
+   */
+
   // The identity to use.
   identity: settings.identity,
 

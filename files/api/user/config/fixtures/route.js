@@ -1,14 +1,14 @@
 'use strict';
 
 /**
- * Module dependencies.
+ * Module dependencies
  */
 
 // Public node modules.
 const async = require('async');
 
 // Local dependencies.
-const regex = require('../../node_modules/strapi/util/regex');
+const regex = require('../../../../node_modules/strapi/util/regex');
 
 /**
  * Creates Routes
@@ -22,6 +22,7 @@ exports.create = function () {
 
   async.auto({
     findRoutes: function (callback) {
+
       // Find all routes.
       strapi.orm
         .collections
@@ -36,6 +37,7 @@ exports.create = function () {
         });
     },
     deleteRoutes: ['findRoutes', function (callback, results) {
+
       // Async dependencies.
       routesFound = results.findRoutes;
 
@@ -49,6 +51,7 @@ exports.create = function () {
       callback(null);
     }],
     updateOrCreateRoutes: ['findRoutes', function (callback, results) {
+
       // Async dependencies.
       routesFound = results.findRoutes;
 
@@ -77,6 +80,7 @@ exports.create = function () {
       callback(null);
     }],
     execRoutesModifications: ['deleteRoutes', 'updateOrCreateRoutes', function (callback) {
+
       // Exec the promises.
       Promise.all(promises)
         .then(function (responses) {
@@ -86,7 +90,9 @@ exports.create = function () {
           callback(err);
         });
     }],
+
     findNewRoutes: ['execRoutesModifications', function (callback) {
+
       // Find created routes.
       strapi.orm
         .collections
@@ -104,6 +110,7 @@ exports.create = function () {
         });
     }],
     updateCreatedRoutes: ['execRoutesModifications', 'findNewRoutes', 'findRoles', function (callback, results) {
+
       // Async dependencies.
       const newRoutesFound = results.findNewRoutes;
       const roles = results.findRoles;
@@ -175,6 +182,7 @@ exports.create = function () {
 
     }],
     findRoles: [function (callback) {
+
       // Find roles.
       strapi.orm
         .collections

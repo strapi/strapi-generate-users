@@ -49,13 +49,12 @@ module.exports = {
   autoCreatedAt: settings.autoCreatedAt,
   autoUpdatedAt: settings.autoUpdatedAt,
 
-  // Lifecycle callbacks
+  /**
+   * Lifecycle callbacks
+   */
+
+  // Before validate.
   beforeValidate: function (values, next) {
-    /**
-     * Handle Anchor validations to consider our templates system
-     *
-     * WARNING: Don't remove this part of code if you don't know what you are doing
-     */
     const module = path.basename(__filename, '.js').toLowerCase();
 
     if (strapi.api.hasOwnProperty(module) && _.size(strapi.api[module].templates)) {
@@ -71,6 +70,7 @@ module.exports = {
       _.forEach(templateAttributes, function (rules, key) {
         if (values.hasOwnProperty(key) || key === 'lang') {
           if (key === 'lang') {
+
             // Set lang with correct value
             values[key] = _.includes(strapi.config.i18n.locales, values[key]) ? values[key] : strapi.config.i18n.defaultLocale;
           } else {

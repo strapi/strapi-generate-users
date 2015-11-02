@@ -191,7 +191,7 @@ passport.callback = function * (ctx, next) {
  */
 
 passport.loadStrategies = function loadStrategies() {
-  const strategies = strapi.config.passport.strategies;
+  const strategies = strapi.api.user.config.passport.strategies;
 
   _.forEach(strategies, function (strategy, key) {
     const options = {
