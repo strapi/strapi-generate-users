@@ -1,0 +1,21 @@
+{
+  "grant": {
+    "facebook": {
+      "key": "",
+      "secret": "",
+      "callback": "/auth/facebook/callback",
+      "scope": ["email"]
+    },
+    "google": {
+      "key": "",
+      "secret": "",
+      "callback": "/auth/google/callback",
+      "scope": ["email"]
+    },
+    "twitter": {
+      "key": "",
+      "secret": "",
+      "callback": "/auth/twitter/callback"
+    }
+  }
+}
