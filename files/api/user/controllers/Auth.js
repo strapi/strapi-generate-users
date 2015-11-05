@@ -7,6 +7,10 @@
 // Node.js core.
 const crypto = require('crypto');
 
+// Public node modules.
+const _ = require('lodash');
+const anchor = require('anchor');
+
 /**
  * Auth controller
  */
@@ -14,29 +18,144 @@ const crypto = require('crypto');
 module.exports = {
 
   /**
-   * Main action for auth: register and login
+   * Main action for login
    * both for local auth an provider auth.
    */
 
   callback: function * () {
     const ctx = this;
 
-    yield strapi.api.user.services.passport.callback(this, function (err, user) {
-      if (err || !user) {
+    const provider = ctx.params.provider || 'local';
+    const params = ctx.request.body;
+    const access_token = ctx.query.access_token;
+
+    if (provider === 'local') {
+      // The identifier is required.
+      if (!params.identifier) {
         ctx.status = 400;
-        return ctx.body = err.message || {};
+        return ctx.body = {message: 'Please provide your username or your e-mail.'};
+      }
+
+      // The password is required.
+      if (!params.password) {
+        ctx.status = 400;
+        return ctx.body = {message: 'Please provide your password.'};
+      }
+
+      const query = {};
+      query.provider = 'local';
+
+      // Check if the provided identifier is an email or not.
+      const isEmail = !anchor(params.identifier).to({
+        type: 'email'
+      });
+
+      // Set the identifier to the appropriate query field.
+      if (isEmail) {
+        query.email = params.identifier;
       } else {
-        ctx.status = 200;
-        if (_.contains(ctx.originalUrl, 'local')) {
+        query.username = params.identifier;
+      }
+
+      // Check if the user exists.
+      try {
+        const user = yield User.findOne(query);
+
+        if (!user) {
+          ctx.status = 403;
+          return ctx.body = {message: 'Identifier or password invalid.'};
+        }
+
+        const validPassword = user.validatePassword(params.password);
+
+        if (!validPassword) {
+          ctx.status = 403;
+          return ctx.body = {message: 'Identifier or password invalid.'};
+        } else {
+          // Remove sensitive data
+          delete user.password;
+
+          ctx.status = 200;
           ctx.body = {
             jwt: strapi.api.user.services.jwt.issue(user),
             user: user
           };
-        } else {
-          ctx.redirect(strapi.config.frontendUrl || strapi.config.url + '?jwt=' + strapi.api.user.services.jwt.issue(user) + '&user=' + JSON.stringify(user));
         }
+      } catch (err) {
+        ctx.status = 500;
+        return ctx.body = {message: err.message};
       }
+    } else {
+      // Third-party provider
+      if (!access_token) {
+        ctx.status = 400;
+        return ctx.body = {message: 'No access_token.'};
+      }
+
+      // Connect the User
+      try {
+        const user = yield strapi.api.user.services.grant.connect(provider, access_token);
+
+        // Remove sensitive data
+        delete user.password;
+
+        ctx.redirect(strapi.config.frontendUrl || strapi.config.url + '?jwt=' + strapi.api.user.services.jwt.issue(user) + '&user=' + JSON.stringify(user));
+      } catch (err) {
+        ctx.status = 500;
+        return ctx.body = {message: err.message};
+      }
+    }
+  },
+
+  /**
+   * Register endpoint for local user.
+   */
+
+  register: function * () {
+    const ctx = this;
+    const params = _.assign(ctx.request.body, {
+      id_ref: 1,
+      lang: strapi.config.i18n.defaultLocale,
+      template: 'standard',
+      provider: 'local'
     });
+
+    // Password is required.
+    if (!params.password) {
+      ctx.status = 400;
+      return ctx.body = {message: 'Invalid password field.'};
+    }
+
+    // First, check if the user is the first one to register.
+    try {
+      const usersCount = yield User.count();
+
+      // Create the user
+      let user = yield User.create(params);
+
+      // Check if the user is the first to register
+      if (usersCount === 0) {
+        // Find the roles
+        const roles = yield Role.find();
+
+        // Add the role `admin` to the current user
+        user.roles.add(_.find(roles, {name: 'admin'}));
+
+        user = yield user.save();
+      }
+
+      // Remove sensitive data
+      delete user.password;
+
+      ctx.status = 200;
+      ctx.body = {
+        jwt: strapi.api.user.services.jwt.issue(user),
+        user: user
+      };
+    } catch (err) {
+      ctx.status = 500;
+      return ctx.body = {message: err.message};
+    }
   },
 
   /**
