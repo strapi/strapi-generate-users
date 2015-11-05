@@ -7,11 +7,6 @@
 // Public node modules.
 const _ = require('lodash');
 const Purest = require('purest');
-const providers = {
-  facebook: new Purest({provider: 'facebook'}),
-  google: new Purest({provider: 'google'}),
-  twitter: new Purest({provider: 'twitter'})
-};
 
 /**
  * Connect a third-party profile to a local user
@@ -27,58 +22,85 @@ exports.connect = function * connect(provider, access_token) {
   const deferred = Promise.defer();
 
   if (!access_token) {
-    return deferred.reject({message: 'No access_token.'});
-  }
-
-  if (!providers.provider) {
-    return deferred.reject({message: 'Unknown provider.'});
-  }
-
-  // Get the profile
-  providers[provider].query().get('me').auth(access_token).request(function (err, res, body) {
-    if (err) {
-      return deferred.reject(err);
-    }
-
-    const profile = {
-      username: body.username,
-      email: body.email
-    };
-
-    // If neither an email or a username was available in the profile, we don't
-    // have a way of identifying the user
-    if (!profile.username && !profile.email) {
-      deferred.reject({message: 'Neither a username nor email was available.'});
-    }
-
-    User.findOne(profile).exec(function (err, user) {
+    deferred.reject({message: 'No access_token.'});
+  } else {
+    // Get the profile
+    getProfile(provider, access_token, function (err, profile) {
       if (err) {
-        return deferred.reject(err);
-      }
-
-      if (!user) {
-        // Create the new user
-        const params = _.assign(profile, {
-          id_ref: 1,
-          lang: strapi.config.i18n.defaultLocale,
-          template: 'standard',
-          provider: provider
-        });
-
-        User.create(params).exec(function (err, user) {
-          if (err) {
-            return deferredd.reject(err);
-          }
-
-          deferred.resolve(user);
-
-          return deferred.promise;
-        });
+        deferred.reject(err);
       } else {
-        deferred.resolve(user);
+        // We need at least the mail
+        if (!profile.email) {
+          deferred.reject({message: 'Email was not available.'});
+        } else {
+          User.findOne({email: profile.email}).exec(function (err, user) {
+            if (err) {
+              deferred.reject(err);
+            } else if (!user) {
+              // Create the new user
+              const params = _.assign(profile, {
+                id_ref: 1,
+                lang: strapi.config.i18n.defaultLocale,
+                template: 'standard',
+                provider: provider
+              });
 
-        return deferred.promise;
+              User.create(params).exec(function (err, user) {
+                if (err) {
+                  deferred.reject(err);
+                } else {
+                  deferred.resolve(user);
+                }
+              });
+            } else {
+              deferred.resolve(user);
+            }
+          });
+        }
       }
     });
-  });
+  }
+
+  return deferred.promise;
 };
+
+/**
+ * Helper to get profiles
+ *
+ * @param {String}   provider
+ * @param {Function} callback
+ */
+
+function getProfile(provider, access_token, callback) {
+  switch (provider) {
+    case 'facebook':
+      const facebook = new Purest({provider: 'facebook'});
+      facebook.query().get('me?fields=name,email').auth(access_token).request(function (err, res, body) {
+        if (err) {
+          callback(err);
+        } else {
+          callback(null, {
+            username: body.name,
+            email: body.email
+          });
+        }
+      });
+      break;
+    case 'google':
+      const google = new Purest({provider: 'google'});
+      google.query('plus').get('people/me').auth(access_token).request(function (err, res, body) {
+        if (err) {
+          callback(err);
+        } else {
+          callback(null, {
+            username: body.displayName,
+            email: body.emails[0].value
+          });
+        }
+      });
+      break;
+    default:
+      callback({message: 'Unknown provider.'});
+      break;
+  }
+}
