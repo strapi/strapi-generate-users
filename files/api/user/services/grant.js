@@ -9,7 +9,7 @@ const _ = require('lodash');
 const Purest = require('purest');
 
 /**
- * Connect a third-party profile to a local user
+ * Connect thanks to a third-party provider
  *
  *
  * @param {String}    provider
