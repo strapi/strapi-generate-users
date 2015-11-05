@@ -86,13 +86,7 @@ module.exports = {
         return ctx.body = {message: err.message};
       }
     } else {
-      // Third-party provider
-      if (!access_token) {
-        ctx.status = 400;
-        return ctx.body = {message: 'No access_token.'};
-      }
-
-      // Connect the User
+      // Connect the user thanks to the third-party provider
       try {
         const user = yield strapi.api.user.services.grant.connect(provider, access_token);
 
