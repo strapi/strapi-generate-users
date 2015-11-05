@@ -19,7 +19,7 @@ module.exports = {
 
   /**
    * Main action for login
-   * both for local auth an provider auth.
+   * both for local auth and provider auth.
    */
 
   callback: function * () {
