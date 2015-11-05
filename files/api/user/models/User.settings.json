@@ -8,11 +8,13 @@
   "attributes": {
     "username": {
       "type": "string",
-      "minLength": 3
+      "minLength": 3,
+      "unique": true
     },
     "email": {
       "type": "email",
-      "minLength": 6
+      "minLength": 6,
+      "unique": true
     },
     "lang": {
       "type": "string",
