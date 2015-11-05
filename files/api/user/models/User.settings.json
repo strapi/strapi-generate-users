@@ -25,9 +25,12 @@
     "id_ref": {
       "type": "int"
     },
-    "passports": {
-      "collection": "passport",
-      "via": "user"
+    "provider": {
+      "type": "string"
+    },
+    "password": {
+      "type": "string",
+      "minLength": 6
     },
     "roles": {
       "collection": "role",
