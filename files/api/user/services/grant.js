@@ -7,6 +7,9 @@
 // Public node modules.
 const _ = require('lodash');
 const Purest = require('purest');
+const facebook = new Purest({provider: 'facebook'});
+const github = new Purest({provider: 'github', defaults: {headers: {'user-agent': 'strapi'}}});
+const google = new Purest({provider: 'google'});
 
 /**
  * Connect thanks to a third-party provider
@@ -74,7 +77,6 @@ exports.connect = function * connect(provider, access_token) {
 function getProfile(provider, access_token, callback) {
   switch (provider) {
     case 'facebook':
-      const facebook = new Purest({provider: 'facebook'});
       facebook.query().get('me?fields=name,email').auth(access_token).request(function (err, res, body) {
         if (err) {
           callback(err);
@@ -87,7 +89,6 @@ function getProfile(provider, access_token, callback) {
       });
       break;
     case 'github':
-      const github = new Purest({provider: 'github', defaults: {headers: {'user-agent': 'strapi'}}});
       github.query().get('user').auth(access_token).request(function (err, res, body) {
         if (err) {
           callback(err);
@@ -100,7 +101,6 @@ function getProfile(provider, access_token, callback) {
       });
       break;
     case 'google':
-      const google = new Purest({provider: 'google'});
       google.query('plus').get('people/me').auth(access_token).request(function (err, res, body) {
         if (err) {
           callback(err);
