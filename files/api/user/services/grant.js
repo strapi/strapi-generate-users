@@ -86,6 +86,19 @@ function getProfile(provider, access_token, callback) {
         }
       });
       break;
+    case 'github':
+      const github = new Purest({provider: 'github', defaults: {headers: {'user-agent': 'strapi'}}});
+      github.query().get('user').auth(access_token).request(function (err, res, body) {
+        if (err) {
+          callback(err);
+        } else {
+          callback(null, {
+            username: body.login,
+            email: body.email
+          });
+        }
+      });
+      break;
     case 'google':
       const google = new Purest({provider: 'google'});
       google.query('plus').get('people/me').auth(access_token).request(function (err, res, body) {
