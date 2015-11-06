@@ -33,17 +33,20 @@ module.exports = {
       // The identifier is required.
       if (!params.identifier) {
         ctx.status = 400;
-        return ctx.body = {message: 'Please provide your username or your e-mail.'};
+        return ctx.body = {
+          message: 'Please provide your username or your e-mail.'
+        };
       }
 
       // The password is required.
       if (!params.password) {
         ctx.status = 400;
-        return ctx.body = {message: 'Please provide your password.'};
+        return ctx.body = {
+          message: 'Please provide your password.'
+        };
       }
 
       const query = {};
-      query.provider = 'local';
 
       // Check if the provided identifier is an email or not.
       const isEmail = !anchor(params.identifier).to({
@@ -63,14 +66,26 @@ module.exports = {
 
         if (!user) {
           ctx.status = 403;
-          return ctx.body = {message: 'Identifier or password invalid.'};
+          return ctx.body = {
+            message: 'Identifier or password invalid.'
+          };
+        }
+
+        // The user never registered with the `local` provider.
+        if (!user.password) {
+          ctx.status = 400;
+          return ctx.body = {
+            message: 'This user never set a local password, please login thanks to the provider used during account creation.'
+          };
         }
 
         const validPassword = user.validatePassword(params.password);
 
         if (!validPassword) {
           ctx.status = 403;
-          return ctx.body = {message: 'Identifier or password invalid.'};
+          return ctx.body = {
+            message: 'Identifier or password invalid.'
+          };
         } else {
           // Remove sensitive data
           delete user.password;
@@ -83,20 +98,24 @@ module.exports = {
         }
       } catch (err) {
         ctx.status = 500;
-        return ctx.body = {message: err.message};
+        return ctx.body = {
+          message: err.message
+        };
       }
     } else {
-      // Connect the user thanks to the third-party provider
+      // Connect the user thanks to the third-party provider.
       try {
         const user = yield strapi.api.user.services.grant.connect(provider, access_token);
 
-        // Remove sensitive data
+        // Remove sensitive data.
         delete user.password;
 
         ctx.redirect(strapi.config.frontendUrl || strapi.config.url + '?jwt=' + strapi.api.user.services.jwt.issue(user) + '&user=' + JSON.stringify(user));
       } catch (err) {
         ctx.status = 500;
-        return ctx.body = {message: err.message};
+        return ctx.body = {
+          message: err.message
+        };
       }
     }
   },
@@ -117,7 +136,9 @@ module.exports = {
     // Password is required.
     if (!params.password) {
       ctx.status = 400;
-      return ctx.body = {message: 'Invalid password field.'};
+      return ctx.body = {
+        message: 'Invalid password field.'
+      };
     }
 
     // First, check if the user is the first one to register.
@@ -138,7 +159,7 @@ module.exports = {
         user = yield user.save();
       }
 
-      // Remove sensitive data
+      // Remove sensitive data.
       delete user.password;
 
       ctx.status = 200;
@@ -148,7 +169,9 @@ module.exports = {
       };
     } catch (err) {
       ctx.status = 500;
-      return ctx.body = {message: err.message};
+      return ctx.body = {
+        message: err.message
+      };
     }
   },
 

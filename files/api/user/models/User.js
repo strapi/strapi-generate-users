@@ -44,7 +44,12 @@ module.exports = {
   // Merge simple attributes from settings with those ones.
   attributes: _.merge(settings.attributes, {
     validatePassword: function (password) {
-      return bcrypt.compareSync(password, this.password);
+      if (!this.password) {
+        // The user has no password value.
+        return false;
+      } else {
+        return bcrypt.compareSync(password, this.password);
+      }
     }
   }),
 
