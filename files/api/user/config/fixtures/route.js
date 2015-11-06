@@ -11,7 +11,7 @@ const async = require('async');
 const regex = require('../../../../node_modules/strapi/util/regex');
 
 /**
- * Creates Routes
+ * Creates Routes.
  */
 
 exports.create = function () {
@@ -54,9 +54,12 @@ exports.create = function () {
 
       // Async dependencies.
       routesFound = results.findRoutes;
+      let verb;
 
       // Find or create routes.
       _.forEach(strapi.config.routes, function (route, key) {
+        verb = regex.detectRoute(key).verb;
+
         if (_.find(routesFound, {name: key})) {
           promises.push(strapi.orm.collections.route.update({
             name: key
@@ -64,7 +67,8 @@ exports.create = function () {
             name: key,
             policies: route.policies,
             controller: route.controller,
-            action: route.action
+            action: route.action,
+            verb: verb
           }));
         } else {
           newRoutes.push(key);
@@ -72,7 +76,8 @@ exports.create = function () {
             name: key,
             policies: route.policies,
             controller: route.controller,
-            action: route.action
+            action: route.action,
+            verb: verb
           }));
         }
       });
@@ -137,6 +142,7 @@ exports.create = function () {
 
           // Contributor permissions.
           verb = regex.detectRoute(newRoute.name).verb;
+          newRoute.verb = verb;
           newRoute.isPublic = false;
           newRoute.registeredAuthorized = false;
           newRoute.contributorsAuthorized = false;
@@ -155,6 +161,7 @@ exports.create = function () {
               newRoute.isPublic = true;
               newRoute.registeredAuthorized = true;
             }
+
             newRoute.contributorsAuthorized = true;
           }
 

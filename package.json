@@ -18,12 +18,8 @@
     "fs-extra": "^0.24.0",
     "jsonwebtoken": "^5.4.0",
     "lodash": "^3.10.1",
-    "passport-facebook": "^2.0.0",
-    "passport-github": "^1.0.0",
-    "passport-google-oauth": "^0.2.0",
-    "passport-linkedin": "^1.0.0",
-    "passport-local": "^1.0.0",
-    "passport-twitter": "^1.0.3"
+    "pluralize": "^1.2.1",
+    "purest": "^2.0.0"
   },
   "devDependencies": {
     "xo": "^0.10.0"

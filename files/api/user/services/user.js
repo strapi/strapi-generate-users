@@ -6,6 +6,7 @@
 
 // Public node modules
 const _ = require('lodash');
+const pluralize = require('pluralize');
 
 /**
  * Authorization service
@@ -17,51 +18,126 @@ module.exports = {
    * Check is the user has the roles needed for
    * the current route.
    *
-   * @param route
-   * @param user
+   * @param _ctx
    *
    * @return {boolean}
    */
 
-  isUserAuthorized: function * (route, user, ctx) {
+  isUserAuthorized: function * (_ctx) {
 
-    // Set to false by default.
-    let isAuthorized = false;
-    let entry;
+    // Init variables;
+    let user;
+    let route;
 
-    // Format data.
-    user = user || {};
-    user.roles = user.roles || [];
+    // Get and verify JWT via service.
+    try {
+      // User is authenticated.
+      user = yield strapi.api.user.services.jwt.getToken(_ctx, true);
+
+      // Store user id to request object.
+      _ctx.user = yield User.findOne(user.id).populate('roles');
+
+      // We delete the token from query and body to not mess.
+      _ctx.request.query && delete _ctx.request.query.token;
+      _ctx.request.body && delete _ctx.request.body.token;
+    } catch (err) {
+    }
+
+    // User is admin.
+    if (_ctx.user && _ctx.user.roles && _.find(_ctx.user.roles, {name: 'admin'})) {
+      return true;
+    }
+
+    // Find the current route and its authorized roles.
+    route = yield strapi.orm.collections.route.findOne({
+      name: _.trim(_ctx.request.route.endpoint)
+    }).populate('roles');
+
+    // Route not found.
+    if (!route) {
+      throw Error('Route not found');
+    }
+
+    // Check if _ctx route is public.
+    if (route.isPublic === true) {
+      return true;
+    }
+
+    // The user is not connected.
+    if (!_ctx.user) {
+      return false;
+    }
+
+    // Registered.
+    if (user.id && route.registeredAuthorized === true) {
+      return true;
+    }
 
     // Map the list of roles.
     const authorizedRoles = _.isArray(route.roles) ? _.map(route.roles, 'name') : [];
 
-    // Registered
-    if (user.id && route.registeredAuthorized === true) {
-      return isAuthorized = true;
-    }
-
+    let entry;
     // Owner policy.
-    if (ctx.request.route.controller && route.contributorsAuthorized === true) {
-      entry = yield strapi.orm.collections[ctx.request.route.controller].findOne(ctx.params.id).populate('contributors');
+    if (_ctx.request.route.controller && route.contributorsAuthorized === true) {
+      const controller = _ctx.request.route.controller && _ctx.request.route.controller.toLowerCase();
+      if (_ctx.params.id) {
+        entry = yield strapi.orm.collections[controller].findOne(_ctx.params.id).populate('contributors');
 
-      if (entry && entry.contributors && ctx.user && ctx.user.id) {
+        if (entry && entry.contributors && _ctx.user && _ctx.user.id) {
+          // The authenticated `user` is a contributor.
+          return _.find(entry.contributors, {id: _ctx.user.id});
+        }
+      } else if (route.verb.toLowerCase() === 'get') {
+        // Pluralize the controller name in order to have the relation name.
+        const relation = pluralize.plural(route.controller);
 
-        // The authenticated user is a contributor.
-        return isAuthorized = _.find(entry.contributors, {id: ctx.user.id});
+        // Format request for `GET` requests (eg. the user will receive only the items he is contributor to).
+        yield formatGetRequest(user, relation, _ctx);
+
+        return true;
       } else {
-        return isAuthorized = false;
+        return false;
       }
     }
 
+    // Check by roles.
+    let userRole;
     for (let i = 0; i < user.roles.length; i++) {
-      const userRole = user.roles[i].name;
+      userRole = user.roles[i].name;
       if (userRole && _.contains(authorizedRoles, userRole)) {
-        isAuthorized = true;
-        break;
+        return true;
       }
     }
 
-    return isAuthorized;
+    // Defaults to false`.
+    return false;
   }
 };
+
+/**
+ * Format the `_ctx.request` object in order
+ * to filter sent items.
+ *
+ * @param user
+ * @param relation
+ * @param _ctx
+ */
+function * formatGetRequest(user, relation, _ctx) {
+  // Find the user and populate with the relation.
+  const userFound = yield strapi.orm.collections.user.findOne({
+    id: user && user.id
+  }).populate(relation);
+
+  // User not found.
+  if (!userFound) {
+    throw Error('User not found');
+  }
+
+  // Set the default `where` object.
+  _ctx.request.query.where = _ctx.request.query.where || {};
+
+  // The blueprints will filter the items by IDs.
+  _ctx.request.query.where.id = _.map(userFound[relation], function (item) {
+    return item.id;
+  });
+}
