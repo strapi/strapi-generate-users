@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * Module dependencies
+ * Module dependencies.
  */
 
 // Public node modules.
@@ -12,7 +12,7 @@ const github = new Purest({provider: 'github', defaults: {headers: {'user-agent'
 const google = new Purest({provider: 'google'});
 
 /**
- * Connect thanks to a third-party provider
+ * Connect thanks to a third-party provider.
  *
  *
  * @param {String}    provider
@@ -25,22 +25,26 @@ exports.connect = function * connect(provider, access_token) {
   const deferred = Promise.defer();
 
   if (!access_token) {
-    deferred.reject({message: 'No access_token.'});
+    deferred.reject({
+      message: 'No access_token.'
+    });
   } else {
-    // Get the profile
+    // Get the profile.
     getProfile(provider, access_token, function (err, profile) {
       if (err) {
         deferred.reject(err);
       } else {
-        // We need at least the mail
+        // We need at least the mail.
         if (!profile.email) {
-          deferred.reject({message: 'Email was not available.'});
+          deferred.reject({
+            message: 'Email was not available.'
+          });
         } else {
           User.findOne({email: profile.email}).exec(function (err, user) {
             if (err) {
               deferred.reject(err);
             } else if (!user) {
-              // Create the new user
+              // Create the new user.
               const params = _.assign(profile, {
                 id_ref: 1,
                 lang: strapi.config.i18n.defaultLocale,
@@ -113,7 +117,9 @@ function getProfile(provider, access_token, callback) {
       });
       break;
     default:
-      callback({message: 'Unknown provider.'});
+      callback({
+        message: 'Unknown provider.'
+      });
       break;
   }
 }
