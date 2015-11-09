@@ -33,27 +33,19 @@
       "controller": "Auth",
       "action": "logout"
     },
-    "POST /auth/local/:action": {
-      "controller": "Auth",
-      "action": "callback"
-    },
     "POST /auth/forgotPassword": {
       "controller": "Auth",
       "action": "forgotPassword"
     },
-    "GET /auth/:provider": {
+    "POST /auth/local": {
       "controller": "Auth",
       "action": "callback"
     },
-    "POST /auth/:provider": {
+    "POST /auth/local/register": {
       "controller": "Auth",
-      "action": "callback"
+      "action": "register"
     },
     "GET /auth/:provider/callback": {
-      "controller": "Auth",
-      "action": "callback"
-    },
-    "GET /auth/:provider/:action": {
       "controller": "Auth",
       "action": "callback"
     }

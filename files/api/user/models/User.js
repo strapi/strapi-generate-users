@@ -10,6 +10,7 @@ const path = require('path');
 // Public node modules.
 const _ = require('lodash');
 const anchor = require('anchor');
+const bcrypt = require('bcryptjs');
 
 // Model settings
 const settings = require('./User.settings.json');
@@ -42,7 +43,14 @@ module.exports = {
 
   // Merge simple attributes from settings with those ones.
   attributes: _.merge(settings.attributes, {
-
+    validatePassword: function (password) {
+      if (!this.password) {
+        // The user has no password value.
+        return false;
+      } else {
+        return bcrypt.compareSync(password, this.password);
+      }
+    }
   }),
 
   // Do you automatically want to have time data?
@@ -94,5 +102,33 @@ module.exports = {
     } else {
       next(new Error('Unknow module or no template detected'));
     }
+  },
+
+  // Before create.
+  beforeCreate: function (user, next) {
+    hashPassword(user, next);
+  },
+
+  // Before update.
+  beforeUpdate: function (user, next) {
+    hashPassword(user, next);
   }
 };
+
+/**
+ * Helper used for both beforeCreate and beforeUpdate
+ *
+ * @param {Object} user
+ * @param {Function} next
+ */
+
+function hashPassword(user, next) {
+  if (user.hasOwnProperty('password')) {
+    bcrypt.hash(user.password, 10, function (err, hash) {
+      user.password = hash;
+      next(err, user);
+    });
+  } else {
+    next(null, user);
+  }
+}

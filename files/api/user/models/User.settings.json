@@ -8,11 +8,13 @@
   "attributes": {
     "username": {
       "type": "string",
-      "minLength": 3
+      "minLength": 3,
+      "unique": true
     },
     "email": {
       "type": "email",
-      "minLength": 6
+      "minLength": 6,
+      "unique": true
     },
     "lang": {
       "type": "string",
@@ -25,9 +27,12 @@
     "id_ref": {
       "type": "int"
     },
-    "passports": {
-      "collection": "passport",
-      "via": "user"
+    "provider": {
+      "type": "string"
+    },
+    "password": {
+      "type": "string",
+      "minLength": 6
     },
     "roles": {
       "collection": "role",
