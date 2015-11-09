@@ -156,6 +156,9 @@ module.exports = {
         // Add the role `admin` to the current user
         user.roles.add(_.find(roles, {name: 'admin'}));
 
+        // Prevent double encryption.
+        delete user.password;
+
         user = yield user.save();
       }
 
