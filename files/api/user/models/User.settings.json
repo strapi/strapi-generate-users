@@ -36,7 +36,8 @@
     },
     "roles": {
       "collection": "role",
-      "via": "users"
+      "via": "users",
+      "dominant": true
     }
   },
   "autoCreatedAt": true,
