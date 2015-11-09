@@ -65,22 +65,22 @@ exports.create = function () {
 
         if (_.find(routesFound, {name: key})) {
           promises.push(strapi.orm.collections.route.update({
-            name: key
+            name: _.trim(key)
           }, {
-            name: key,
+            name: _.trim(key),
             policies: route.policies,
-            controller: route.controller,
-            action: route.action,
-            verb: verb
+            controller: _.trim(route.controller),
+            action: _.trim(route.action),
+            verb: _.trim(verb)
           }));
         } else {
-          newRoutes.push(key);
+          newRoutes.push(_.trim(key));
           promises.push(strapi.orm.collections.route.create({
-            name: key,
+            name: _.trim(key),
             policies: route.policies,
             controller: route.controller,
-            action: route.action,
-            verb: verb
+            action: _.trim(route.action),
+            verb: _.trim(verb)
           }));
         }
       });
@@ -145,7 +145,7 @@ exports.create = function () {
 
           // Contributor permissions.
           verb = regex.detectRoute(newRoute.name).verb;
-          newRoute.verb = verb;
+          newRoute.verb = _.trim(verb);
           newRoute.isPublic = false;
           newRoute.registeredAuthorized = false;
           newRoute.contributorsAuthorized = false;
