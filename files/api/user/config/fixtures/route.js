@@ -60,6 +60,9 @@ exports.create = function () {
       _.forEach(strapi.config.routes, function (route, key) {
         verb = regex.detectRoute(key).verb;
 
+        // Check if the controller is a stringified function.
+        route.controller = _.startsWith(route.controller, 'function') ? 'Specific function' : route.controller;
+
         if (_.find(routesFound, {name: key})) {
           promises.push(strapi.orm.collections.route.update({
             name: key
