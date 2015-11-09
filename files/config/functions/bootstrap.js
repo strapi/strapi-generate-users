@@ -9,25 +9,17 @@
  */
 
 module.exports.bootstrap = function (cb) {
-  const passport = strapi.api.user.services.passport;
   const fixtures = require('../../api/user/config/fixtures/index');
 
-  passport.loadStrategies();
-
-  fixtures.role
-    .create()
-    .then(function () {
-      fixtures.route.create()
-        .then(function () {
-          cb();
-        })
-        .catch(function (err) {
-          strapi.log.error(err);
-          cb(err);
-        });
-    })
-    .catch(function (err) {
+  fixtures.role.create().then(function () {
+    fixtures.route.create().then(function () {
+      cb();
+    }).catch(function (err) {
       strapi.log.error(err);
       cb(err);
     });
+  }).catch(function (err) {
+    strapi.log.error(err);
+    cb(err);
+  });
 };
