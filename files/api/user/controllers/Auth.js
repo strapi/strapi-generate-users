@@ -71,14 +71,6 @@ module.exports = {
           };
         }
 
-        // The user never registered with the `local` provider.
-        if (!user.password) {
-          ctx.status = 400;
-          return ctx.body = {
-            message: 'This user never set a local password, please login thanks to the provider used during account creation.'
-          };
-        }
-
         const validPassword = user.validatePassword(params.password);
 
         if (!validPassword) {
