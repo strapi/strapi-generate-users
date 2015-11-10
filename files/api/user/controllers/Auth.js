@@ -200,52 +200,53 @@ module.exports = {
     try {
 
       // Find the user user thanks to his email.
-      user = yield User.findOne({
-        email: email
-      }).populate('passports');
+      user = yield User.findOne({email: email});
 
       // User not found.
-      if (!user || !user.passports[0]) {
+      if (!user) {
         this.status = 400;
         return this.body = {
-          status: 'error',
           message: 'This email does not exist.'
         };
       }
     } catch (err) {
       this.status = 500;
-      return this.body = err;
+      return this.body = {
+        message: err.message
+      };
     }
 
-    // Generate random code.
-    const code = crypto.randomBytes(64).toString('hex');
-
-    // Select the local passport of the user.
-    const localPassport = _.find(user.passports, {
-      protocol: 'local'
-    });
-
     // The user never registered using the local auth system.
-    if (!localPassport) {
-      this.status = 404;
+    if (!user.password) {
+      this.status = 400;
       return this.body = {
         message: 'It looks like you never logged in with a classic authentification. Please log in using your usual login system.'
       };
     }
 
-    // Set the property code of the local passport.
-    localPassport.code = code;
+    // Generate random token.
+    const resetPasswordToken = crypto.randomBytes(64).toString('hex');
 
-    // Update the passport.
-    localPassport.save();
+    // Set the property code of the local passport.
+    user.resetPasswordToken = resetPasswordToken;
+
+    // Update the user.
+    try {
+      user = yield user.save();
+    } catch (err) {
+      this.status = 500;
+      return this.body = {
+        message: err.message
+      };
+    }
 
     // Send an email to the user.
     try {
       yield strapi.api.email.services.email.send({
         to: user.email,
         subject: 'Reset password',
-        text: url + '?code=' + code,
-        html: url + '?code=' + code
+        text: url + '?code=' + resetPasswordToken,
+        html: url + '?code=' + resetPasswordToken
       });
       this.status = 200;
       this.body = {};
