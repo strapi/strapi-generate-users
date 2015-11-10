@@ -18,6 +18,7 @@
     "fs-extra": "^0.24.0",
     "jsonwebtoken": "^5.4.0",
     "lodash": "^3.10.1",
+    "pluralize": "^1.2.1",
     "purest": "^2.0.0"
   },
   "devDependencies": {

@@ -1,10 +1,12 @@
 'use strict';
 
 /**
- * Authenticated policy
+ * Authenticated policy.
  */
 
 exports.authenticated = function *(next) {
+
+  let isAuthenticated = false;
 
   // Get and verify JWT via service.
   try {
@@ -18,11 +20,18 @@ exports.authenticated = function *(next) {
     this.request.body && delete this.request.body.token;
 
     // User is authenticated.
-    yield next;
+    isAuthenticated = true;
   } catch (error) {
+    // User is not authenticated.
+    isAuthenticated = false;
+  }
+
+  if (!isAuthenticated) {
     this.status = 401;
     return this.body = {
       message: 'You are not allowed to perform this action.'
     };
+  } else {
+    yield next;
   }
 };

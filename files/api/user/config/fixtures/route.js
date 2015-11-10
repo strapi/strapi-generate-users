@@ -11,7 +11,7 @@ const async = require('async');
 const regex = require('../../../../node_modules/strapi/util/regex');
 
 /**
- * Creates Routes
+ * Creates Routes.
  */
 
 exports.create = function () {
@@ -54,25 +54,33 @@ exports.create = function () {
 
       // Async dependencies.
       routesFound = results.findRoutes;
+      let verb;
 
       // Find or create routes.
       _.forEach(strapi.config.routes, function (route, key) {
+        verb = regex.detectRoute(key).verb;
+
+        // Check if the controller is a stringified function.
+        route.controller = _.startsWith(route.controller, 'function') ? 'Specific function' : route.controller;
+
         if (_.find(routesFound, {name: key})) {
           promises.push(strapi.orm.collections.route.update({
-            name: key
+            name: _.trim(key)
           }, {
-            name: key,
+            name: _.trim(key),
             policies: route.policies,
-            controller: route.controller,
-            action: route.action
+            controller: _.trim(route.controller),
+            action: _.trim(route.action),
+            verb: _.trim(verb)
           }));
         } else {
-          newRoutes.push(key);
+          newRoutes.push(_.trim(key));
           promises.push(strapi.orm.collections.route.create({
-            name: key,
+            name: _.trim(key),
             policies: route.policies,
             controller: route.controller,
-            action: route.action
+            action: _.trim(route.action),
+            verb: _.trim(verb)
           }));
         }
       });
@@ -137,6 +145,7 @@ exports.create = function () {
 
           // Contributor permissions.
           verb = regex.detectRoute(newRoute.name).verb;
+          newRoute.verb = _.trim(verb);
           newRoute.isPublic = false;
           newRoute.registeredAuthorized = false;
           newRoute.contributorsAuthorized = false;
@@ -155,6 +164,7 @@ exports.create = function () {
               newRoute.isPublic = true;
               newRoute.registeredAuthorized = true;
             }
+
             newRoute.contributorsAuthorized = true;
           }
 

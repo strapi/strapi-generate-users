@@ -13,8 +13,7 @@
     },
     "users": {
       "collection": "user",
-      "via": "roles",
-      "dominant": true
+      "via": "roles"
     }
   },
   "autoCreatedAt": true,
