@@ -87,7 +87,7 @@ module.exports = {
           // The authenticated `user` is a contributor.
           return _.find(entry.contributors, {id: _ctx.user.id});
         }
-      } else if (route.verb.toLowerCase() === 'get') {
+      } else if (_ctx.request.route.verb && _ctx.request.route.verb.toLowerCase() === 'get') {
         // Pluralize the controller name in order to have the relation name.
         const relation = pluralize.plural(route.controller).toLowerCase();
 
