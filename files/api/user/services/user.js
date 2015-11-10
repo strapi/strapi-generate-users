@@ -69,7 +69,7 @@ module.exports = {
     }
 
     // Registered.
-    if (user.id && route.registeredAuthorized === true) {
+    if (user.id && route.registeredAuthorized === true && !route.contributorsAuthorized) {
       return true;
     }
 
@@ -89,7 +89,7 @@ module.exports = {
         }
       } else if (route.verb.toLowerCase() === 'get') {
         // Pluralize the controller name in order to have the relation name.
-        const relation = pluralize.plural(route.controller);
+        const relation = pluralize.plural(route.controller).toLowerCase();
 
         // Format request for `GET` requests (eg. the user will receive only the items he is contributor to).
         yield formatGetRequest(user, relation, _ctx);
