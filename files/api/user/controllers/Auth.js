@@ -256,5 +256,64 @@ module.exports = {
         message: 'Error sending the email'
       };
     }
+  },
+
+  /**
+   * Change user password.
+   */
+
+  changePassword: function * () {
+    // Init variables.
+    const params = _.assign({}, this.request.body, this.params);
+    let user;
+
+    if (params.password && params.passwordConfirmation && params.password === params.passwordConfirmation && params.code) {
+
+      try {
+        user = yield User.findOne({resetPasswordToken: params.code});
+
+        if (!user) {
+          this.status = 400;
+          return this.body = {
+            message: 'Incorrect code provided.'
+          };
+        }
+
+        // Delete the current code
+        user.resetPasswordToken = null;
+
+        // Set the new password (automatically crypted in the `beforeUpdate` function).
+        user.password = params.password;
+
+        // Update the user.
+        user = yield user.save();
+
+        // Remove sensitive data.
+        delete user.password;
+
+        this.status = 200;
+        return this.body = {
+          jwt: strapi.api.user.services.jwt.issue(user),
+          user: user
+        };
+      } catch (err) {
+        this.status = 500;
+        return this.body = {
+          message: err.message
+        };
+      }
+    } else if (params.password && params.passwordConfirmation && params.password !== params.passwordConfirmation) {
+      this.status = 400;
+      return this.body = {
+        message: 'Passwords not matching.'
+      };
+    } else {
+      this.status = 400;
+      return this.body = {
+        status: 'error',
+        message: 'Incorrect params provided.'
+      };
+    }
   }
+
 };
