@@ -34,6 +34,9 @@
       "type": "string",
       "minLength": 6
     },
+    "resetPasswordToken": {
+      "type": "string"
+    },
     "roles": {
       "collection": "role",
       "via": "users",

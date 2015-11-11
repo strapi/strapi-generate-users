@@ -200,52 +200,45 @@ module.exports = {
     try {
 
       // Find the user user thanks to his email.
-      user = yield User.findOne({
-        email: email
-      }).populate('passports');
+      user = yield User.findOne({email: email});
 
       // User not found.
-      if (!user || !user.passports[0]) {
+      if (!user) {
         this.status = 400;
         return this.body = {
-          status: 'error',
           message: 'This email does not exist.'
         };
       }
     } catch (err) {
       this.status = 500;
-      return this.body = err;
-    }
-
-    // Generate random code.
-    const code = crypto.randomBytes(64).toString('hex');
-
-    // Select the local passport of the user.
-    const localPassport = _.find(user.passports, {
-      protocol: 'local'
-    });
-
-    // The user never registered using the local auth system.
-    if (!localPassport) {
-      this.status = 404;
       return this.body = {
-        message: 'It looks like you never logged in with a classic authentification. Please log in using your usual login system.'
+        message: err.message
       };
     }
 
-    // Set the property code of the local passport.
-    localPassport.code = code;
+    // Generate random token.
+    const resetPasswordToken = crypto.randomBytes(64).toString('hex');
 
-    // Update the passport.
-    localPassport.save();
+    // Set the property code of the local passport.
+    user.resetPasswordToken = resetPasswordToken;
+
+    // Update the user.
+    try {
+      user = yield user.save();
+    } catch (err) {
+      this.status = 500;
+      return this.body = {
+        message: err.message
+      };
+    }
 
     // Send an email to the user.
     try {
       yield strapi.api.email.services.email.send({
         to: user.email,
         subject: 'Reset password',
-        text: url + '?code=' + code,
-        html: url + '?code=' + code
+        text: url + '?code=' + resetPasswordToken,
+        html: url + '?code=' + resetPasswordToken
       });
       this.status = 200;
       this.body = {};
@@ -255,5 +248,64 @@ module.exports = {
         message: 'Error sending the email'
       };
     }
+  },
+
+  /**
+   * Change user password.
+   */
+
+  changePassword: function * () {
+    // Init variables.
+    const params = _.assign({}, this.request.body, this.params);
+    let user;
+
+    if (params.password && params.passwordConfirmation && params.password === params.passwordConfirmation && params.code) {
+
+      try {
+        user = yield User.findOne({resetPasswordToken: params.code});
+
+        if (!user) {
+          this.status = 400;
+          return this.body = {
+            message: 'Incorrect code provided.'
+          };
+        }
+
+        // Delete the current code
+        user.resetPasswordToken = null;
+
+        // Set the new password (automatically crypted in the `beforeUpdate` function).
+        user.password = params.password;
+
+        // Update the user.
+        user = yield user.save();
+
+        // Remove sensitive data.
+        delete user.password;
+
+        this.status = 200;
+        return this.body = {
+          jwt: strapi.api.user.services.jwt.issue(user),
+          user: user
+        };
+      } catch (err) {
+        this.status = 500;
+        return this.body = {
+          message: err.message
+        };
+      }
+    } else if (params.password && params.passwordConfirmation && params.password !== params.passwordConfirmation) {
+      this.status = 400;
+      return this.body = {
+        message: 'Passwords not matching.'
+      };
+    } else {
+      this.status = 400;
+      return this.body = {
+        status: 'error',
+        message: 'Incorrect params provided.'
+      };
+    }
   }
+
 };

@@ -33,9 +33,13 @@
       "controller": "Auth",
       "action": "logout"
     },
-    "POST /auth/forgotPassword": {
+    "POST /auth/forgot-password": {
       "controller": "Auth",
       "action": "forgotPassword"
+    },
+    "POST /auth/change-password": {
+      "controller": "Auth",
+      "action": "changePassword"
     },
     "POST /auth/local": {
       "controller": "Auth",
