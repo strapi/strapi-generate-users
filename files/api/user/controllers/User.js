@@ -1,5 +1,7 @@
 'use strict';
 
+const model = 'user';
+
 /**
  * A set of functions called "actions" for `user`
  */
@@ -7,181 +9,114 @@
 module.exports = {
 
   /**
-   * Kind of router to get user entry/entries
-   *
-   * @param {Object} this.request
+   * Get user entries.
    *
    * @return {Object|Array}
    */
 
-  read: function * () {
-    const params = this.params;
-    let controller = 'user';
-
-    if (params.hasOwnProperty('template') && strapi.controllers[controller + params.template]) {
-      controller += params.template;
+  find: function * () {
+    this.model = model;
+    try {
+      let entry = yield strapi.hooks.blueprints.find(this);
+      this.body = entry;
+    } catch (err) {
+      this.body = err;
     }
-
-    this.body = yield strapi.controllers[controller].get(params, this);
   },
 
   /**
-   * Kind of router to update user entry
+   * Get a specific user.
    *
-   * @param {Object} this.request
+   * @return {Object|Array}
+   */
+
+  findOne: function * () {
+    this.model = model;
+    try {
+      let entry = yield strapi.hooks.blueprints.findOne(this);
+      this.body = entry;
+    } catch (err) {
+      this.body = err;
+    }
+  },
+
+  /**
+   * Create a user entry.
+   *
+   * @return {Object}
+   */
+
+  create: function * () {
+    this.model = model;
+    try {
+      let entry = yield strapi.hooks.blueprints.create(this);
+      this.body = entry;
+    } catch (err) {
+      this.body = err;
+    }
+  },
+
+  /**
+   * Update a user entry.
    *
    * @return {Object}
    */
 
   update: function * () {
-    const params = _.merge(this.request.body, this.params);
-    let controller = 'user';
-
-    if (params.hasOwnProperty('template') && strapi.controllers[controller + params.template]) {
-      controller += params.template;
+    this.model = model;
+    try {
+      let entry = yield strapi.hooks.blueprints.update(this);
+      this.body = entry;
+    } catch (err) {
+      this.body = err;
     }
-
-    this.body = yield strapi.controllers[controller].edit(params, this);
   },
 
   /**
-   * Kind of router to delete user entry
-   *
-   * @param {Object} this.request
+   * Destroy a user entry.
    *
    * @return {Object}
    */
 
-  delete: function * () {
-    const params = _.merge(this.request.body, this.params);
-    let controller = 'user';
-
-    if (params.hasOwnProperty('template') && strapi.controllers[controller + params.template]) {
-      controller += params.template;
+  destroy: function * () {
+    this.model = model;
+    try {
+      let entry = yield strapi.hooks.blueprints.destroy(this);
+      this.body = entry;
+    } catch (err) {
+      this.body = err;
     }
-
-    this.body = yield strapi.controllers[controller].destroy(params, this);
   },
 
   /**
-   * Get user entry if `id` is specified
-   * or get entries with automatic pagination
+   * Add an entry to a specific user.
    *
-   * @param {Object} scope
-   * @param {Context} _ctx
-   *
-   * @return {Promise*Object || Promise*Array}
+   * @return {Object}
    */
 
-  get: function * (scope, _ctx) {
-    const deferred = Promise.defer();
-
-    if (!scope) {
-      if (_ctx) {
-        _ctx.status = 400;
-      }
-
-      deferred.resolve({
-        error: 'You can\'t read undefined record'
-      });
+  add: function * () {
+    this.model = model;
+    try {
+      let entry = yield strapi.hooks.blueprints.add(this);
+      this.body = entry;
+    } catch (err) {
+      this.body = err;
     }
-
-    User.find(scope)
-      .exec(function (err, user) {
-        if (err) {
-          if (_ctx) {
-            _ctx.status = 400;
-          }
-
-          deferred.resolve({
-            error: err
-          });
-        }
-
-        deferred.resolve((scope && scope.id) ? user[0] : user);
-      });
-
-    return deferred.promise;
   },
 
   /**
-   * Edit user entry
+   * Remove a specific entry from a specific user.
    *
-   * @param {Object} scope
-   * @param {Context} _ctx
-   *
-   * @return {Promise*Object}
+   * @return {Object}
    */
 
-  edit: function * (scope, _ctx) {
-    const deferred = Promise.defer();
-
-    if (!scope || !scope.id) {
-      if (_ctx) {
-        _ctx.status = 400;
-      }
-
-      deferred.resolve({
-        error: 'You can\'t update undefined record'
-      });
+  remove: function * () {
+    this.model = model;
+    try {
+      let entry = yield strapi.hooks.blueprints.remove(this);
+      this.body = entry;
+    } catch (err) {
+      this.body = err;
     }
-
-    User.update(scope.id, scope)
-      .exec(function (err, user) {
-        if (err) {
-          if (_ctx) {
-            _ctx.status = 400;
-          }
-
-          deferred.resolve({
-            error: err
-          });
-        }
-
-        deferred.resolve(user);
-      });
-
-    return deferred.promise;
-  },
-
-  /**
-   * Destroy user entry
-   *
-   * @param {Object} scope
-   * @param {Context} _ctx
-   *
-   * @return {Promise*Object}
-   */
-
-  destroy: function * (scope, _ctx) {
-    const deferred = Promise.defer();
-
-    if (!scope || !scope.id) {
-      if (_ctx) {
-        _ctx.status = 400;
-      }
-
-      deferred.resolve({
-        error: 'You can\'t delete undefined record'
-      });
-    }
-
-    User.destroy(scope.id)
-      .exec(function (err, user) {
-        if (err) {
-          if (_ctx) {
-            _ctx.status = 400;
-          }
-
-          deferred.resolve({
-            error: err
-          });
-        }
-
-        deferred.resolve(user);
-      });
-
-    return deferred.promise;
   }
-
 };
