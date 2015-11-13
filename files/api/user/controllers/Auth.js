@@ -87,15 +87,9 @@ module.exports = {
             message: 'Identifier or password invalid.'
           };
         } else {
-          // Generate JWT.
-          const jwt = strapi.api.user.services.jwt.issue(user);
-
-          // Remove useless `iat` field generated during JWT creation.
-          delete user.iat;
-
           ctx.status = 200;
           ctx.body = {
-            jwt: jwt,
+            jwt: strapi.api.user.services.jwt.issue(user),
             user: user
           };
         }
@@ -110,13 +104,7 @@ module.exports = {
       try {
         const user = yield strapi.api.user.services.grant.connect(provider, access_token);
 
-        // Generate JWT.
-        const jwt = strapi.api.user.services.jwt.issue(user);
-
-        // Remove useless `iat` field generated during JWT creation.
-        delete user.iat;
-
-        ctx.redirect(strapi.config.frontendUrl || strapi.config.url + '?jwt=' + jwt + '&user=' + JSON.stringify(user));
+        ctx.redirect(strapi.config.frontendUrl || strapi.config.url + '?jwt=' + strapi.api.user.services.jwt.issue(user) + '&user=' + JSON.stringify(user));
       } catch (err) {
         ctx.status = 500;
         return ctx.body = {
@@ -168,15 +156,9 @@ module.exports = {
         user = yield user.save();
       }
 
-      // Generate JWT.
-      const jwt = strapi.api.user.services.jwt.issue(user);
-
-      // Remove useless `iat` field generated during JWT creation.
-      delete user.iat;
-
       ctx.status = 200;
       ctx.body = {
-        jwt: jwt,
+        jwt: strapi.api.user.services.jwt.issue(user),
         user: user
       };
     } catch (err) {
@@ -288,15 +270,9 @@ module.exports = {
         // Update the user.
         user = yield user.save();
 
-        // Generate JWT.
-        const jwt = strapi.api.user.services.jwt.issue(user);
-
-        // Remove useless `iat` field generated during JWT creation.
-        delete user.iat;
-
         this.status = 200;
         return this.body = {
-          jwt: jwt,
+          jwt: strapi.api.user.services.jwt.issue(user),
           user: user
         };
       } catch (err) {
