@@ -43,6 +43,14 @@ module.exports = {
 
   // Merge simple attributes from settings with those ones.
   attributes: _.merge(settings.attributes, {
+    // Override toJSON instance method
+    // to remove password value.
+    toJSON: function() {
+      var obj = this.toObject();
+      delete obj.password;
+      return obj;
+    },
+    // Validate password.
     validatePassword: function (password) {
       if (!this.password) {
         // The user has no password value.
