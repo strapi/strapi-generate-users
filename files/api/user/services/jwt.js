@@ -5,8 +5,8 @@
  */
 
 // Public node modules
-const jwt = require('jsonwebtoken');
 const _ = require('lodash');
+const jwt = require('jsonwebtoken');
 
 /**
  * Service method to generate a new token based on payload we want to put on it.

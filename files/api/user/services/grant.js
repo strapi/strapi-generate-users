@@ -6,10 +6,26 @@
 
 // Public node modules.
 const _ = require('lodash');
+
+// Purest strategies.
 const Purest = require('purest');
-const facebook = new Purest({provider: 'facebook'});
-const github = new Purest({provider: 'github', defaults: {headers: {'user-agent': 'strapi'}}});
-const google = new Purest({provider: 'google'});
+
+const facebook = new Purest({
+  provider: 'facebook'
+});
+
+const github = new Purest({
+  provider: 'github',
+  defaults: {
+    headers: {
+      'user-agent': 'strapi'
+    }
+  }
+});
+
+const google = new Purest({
+  provider: 'google'
+});
 
 /**
  * Connect thanks to a third-party provider.

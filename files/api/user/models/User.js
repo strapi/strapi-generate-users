@@ -45,8 +45,8 @@ module.exports = {
   attributes: _.merge(settings.attributes, {
     // Override toJSON instance method
     // to remove `password` and `resetPasswordToken` values.
-    toJSON: function() {
-      var obj = this.toObject();
+    toJSON: function () {
+      const obj = this.toObject();
       delete obj.password;
       delete obj.resetPasswordToken;
       return obj;
