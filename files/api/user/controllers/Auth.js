@@ -87,12 +87,15 @@ module.exports = {
             message: 'Identifier or password invalid.'
           };
         } else {
-          // Remove sensitive data
-          delete user.password;
+          // Generate JWT.
+          const jwt = strapi.api.user.services.jwt.issue(user);
+
+          // Remove useless `iat` field generated during JWT creation.
+          delete user.iat;
 
           ctx.status = 200;
           ctx.body = {
-            jwt: strapi.api.user.services.jwt.issue(user),
+            jwt: jwt,
             user: user
           };
         }
@@ -107,10 +110,13 @@ module.exports = {
       try {
         const user = yield strapi.api.user.services.grant.connect(provider, access_token);
 
-        // Remove sensitive data.
-        delete user.password;
+        // Generate JWT.
+        const jwt = strapi.api.user.services.jwt.issue(user);
 
-        ctx.redirect(strapi.config.frontendUrl || strapi.config.url + '?jwt=' + strapi.api.user.services.jwt.issue(user) + '&user=' + JSON.stringify(user));
+        // Remove useless `iat` field generated during JWT creation.
+        delete user.iat;
+
+        ctx.redirect(strapi.config.frontendUrl || strapi.config.url + '?jwt=' + jwt + '&user=' + JSON.stringify(user));
       } catch (err) {
         ctx.status = 500;
         return ctx.body = {
@@ -162,12 +168,15 @@ module.exports = {
         user = yield user.save();
       }
 
-      // Remove sensitive data.
-      delete user.password;
+      // Generate JWT.
+      const jwt = strapi.api.user.services.jwt.issue(user);
+
+      // Remove useless `iat` field generated during JWT creation.
+      delete user.iat;
 
       ctx.status = 200;
       ctx.body = {
-        jwt: strapi.api.user.services.jwt.issue(user),
+        jwt: jwt,
         user: user
       };
     } catch (err) {
@@ -198,7 +207,6 @@ module.exports = {
     let user;
 
     try {
-
       // Find the user user thanks to his email.
       user = yield User.findOne({email: email});
 
@@ -280,12 +288,15 @@ module.exports = {
         // Update the user.
         user = yield user.save();
 
-        // Remove sensitive data.
-        delete user.password;
+        // Generate JWT.
+        const jwt = strapi.api.user.services.jwt.issue(user);
+
+        // Remove useless `iat` field generated during JWT creation.
+        delete user.iat;
 
         this.status = 200;
         return this.body = {
-          jwt: strapi.api.user.services.jwt.issue(user),
+          jwt: jwt,
           user: user
         };
       } catch (err) {
@@ -307,5 +318,4 @@ module.exports = {
       };
     }
   }
-
 };
