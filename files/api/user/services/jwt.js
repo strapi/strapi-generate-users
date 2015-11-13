@@ -6,6 +6,7 @@
 
 // Public node modules
 const jwt = require('jsonwebtoken');
+const _ = require('lodash');
 
 /**
  * Service method to generate a new token based on payload we want to put on it.
@@ -17,7 +18,7 @@ const jwt = require('jsonwebtoken');
 
 exports.issue = function (payload) {
   return jwt.sign(
-    payload,
+    _.clone(payload),
     process.env.JWT_SECRET || strapi.api.user.config.jwtSecret || 'oursecret'
   );
 };

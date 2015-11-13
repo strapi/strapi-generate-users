@@ -87,9 +87,6 @@ module.exports = {
             message: 'Identifier or password invalid.'
           };
         } else {
-          // Remove sensitive data
-          delete user.password;
-
           ctx.status = 200;
           ctx.body = {
             jwt: strapi.api.user.services.jwt.issue(user),
@@ -106,9 +103,6 @@ module.exports = {
       // Connect the user thanks to the third-party provider.
       try {
         const user = yield strapi.api.user.services.grant.connect(provider, access_token);
-
-        // Remove sensitive data.
-        delete user.password;
 
         ctx.redirect(strapi.config.frontendUrl || strapi.config.url + '?jwt=' + strapi.api.user.services.jwt.issue(user) + '&user=' + JSON.stringify(user));
       } catch (err) {
@@ -162,9 +156,6 @@ module.exports = {
         user = yield user.save();
       }
 
-      // Remove sensitive data.
-      delete user.password;
-
       ctx.status = 200;
       ctx.body = {
         jwt: strapi.api.user.services.jwt.issue(user),
@@ -198,7 +189,6 @@ module.exports = {
     let user;
 
     try {
-
       // Find the user user thanks to his email.
       user = yield User.findOne({email: email});
 
@@ -280,9 +270,6 @@ module.exports = {
         // Update the user.
         user = yield user.save();
 
-        // Remove sensitive data.
-        delete user.password;
-
         this.status = 200;
         return this.body = {
           jwt: strapi.api.user.services.jwt.issue(user),
@@ -307,5 +294,4 @@ module.exports = {
       };
     }
   }
-
 };
