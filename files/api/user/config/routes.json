@@ -19,7 +19,8 @@
       "action": "create",
       "policies": [
         "isAuthorized",
-        "addDataCreate"
+        "addDataCreate",
+        "deleteRoles"
       ]
     },
     "PUT /user/:id": {
@@ -27,7 +28,8 @@
       "action": "update",
       "policies": [
         "isAuthorized",
-        "addDataUpdate"
+        "addDataUpdate",
+        "deleteRoles"
       ]
     },
     "DELETE /user/:id": {
@@ -42,7 +44,8 @@
       "action": "add",
       "policies": [
         "isAuthorized",
-        "addDataCreate"
+        "addDataCreate",
+        "userAddOrRemoveRole"
       ]
     },
     "DELETE /user/:parentId/:relation/:id": {
@@ -50,7 +53,8 @@
       "action": "remove",
       "policies": [
         "isAuthorized",
-        "addDataUpdate"
+        "addDataUpdate",
+        "userAddOrRemoveRole"
       ]
     },
     "POST /auth/logout": {
