@@ -2,16 +2,25 @@
   "routes": {
     "GET /user": {
       "controller": "User",
-      "action": "read",
+      "action": "find",
       "policies": [
         "isAuthorized"
       ]
     },
     "GET /user/:id": {
       "controller": "User",
-      "action": "read",
+      "action": "findOne",
       "policies": [
         "isAuthorized"
+      ]
+    },
+    "POST /user": {
+      "controller": "User",
+      "action": "create",
+      "policies": [
+        "isAuthorized",
+        "addDataCreate",
+        "deleteRoles"
       ]
     },
     "PUT /user/:id": {
@@ -19,14 +28,33 @@
       "action": "update",
       "policies": [
         "isAuthorized",
+        "addDataUpdate",
         "deleteRoles"
       ]
     },
     "DELETE /user/:id": {
       "controller": "User",
-      "action": "delete",
+      "action": "destroy",
       "policies": [
         "isAuthorized"
+      ]
+    },
+    "POST /user/:parentId/:relation": {
+      "controller": "User",
+      "action": "add",
+      "policies": [
+        "isAuthorized",
+        "addDataCreate",
+        "userAddOrRemoveRole"
+      ]
+    },
+    "DELETE /user/:parentId/:relation/:id": {
+      "controller": "User",
+      "action": "remove",
+      "policies": [
+        "isAuthorized",
+        "addDataUpdate",
+        "userAddOrRemoveRole"
       ]
     },
     "POST /auth/logout": {
