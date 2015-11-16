@@ -11,20 +11,16 @@ exports.userAddOrRemoveRole = function * (next) {
 
   if (this.params.relation !== 'roles') {
     isAuthorized = true;
-  } else {
-    if (!this.user || !this.user.id) {
-      isAuthorized = false;
-    } else {
-      // Find the user.
-      const user = yield strapi.orm.collections.user.findOne(this.user.id).populate('roles');
+  } else if (this.user && this.user.id) {
+    // Find the user.
+    const user = yield strapi.orm.collections.user.findOne(this.user.id).populate('roles');
 
-      // Check if the user has the `role` admin.
-      const isAdmin = user && _.find(roles, {name: 'admin'});
+    // Check if the user has the `role` admin.
+    const isAdmin = user && _.find(user.roles, {name: 'admin'});
 
-      // Authorize the user only if the user has the admin `role`.
-      if (isAdmin) {
-        isAuthorized = true;
-      }
+    // Authorize the user only if the user has the admin `role`.
+    if (isAdmin) {
+      isAuthorized = true;
     }
   }
 
