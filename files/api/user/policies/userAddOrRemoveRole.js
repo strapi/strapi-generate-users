@@ -32,6 +32,6 @@ exports.userAddOrRemoveRole = function * (next) {
     this.status = 403;
     this.body = {
       message: 'You must have the role `admin` to update roles using this route.'
-    }
+    };
   }
 };
