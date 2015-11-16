@@ -81,31 +81,30 @@ module.exports = {
     if (_ctx.request.route.controller && route.contributorsAuthorized === true) {
       const controller = _ctx.request.route.controller && _ctx.request.route.controller.toLowerCase();
       if (_ctx.params.id) {
-
+        // Specific behavior if the model requested is `user`.
         if (_ctx.request.route.controller.toLowerCase() === 'user') {
-
           // Attempting to find a user.
           const userFound = yield strapi.orm.collections.user.findOne(_ctx.params.id);
 
-          // Check if the user found has the same id that the authenticated user.
+          // Check if the user found has the same `id that the authenticated user.
           return userFound && userFound.id === user.id;
-
         } else {
           entry = yield strapi.orm.collections[controller].findOne(_ctx.params.id).populate('contributors');
 
           if (entry && entry.contributors && _ctx.user && _ctx.user.id) {
             // The authenticated `user` is a contributor.
             return _.find(entry.contributors, {id: _ctx.user.id});
+          } else {
+            // Default behavior.
+            return false;
           }
         }
-
       } else if (_ctx.request.route.verb && _ctx.request.route.verb.toLowerCase() === 'get') {
-
+        // Specific behavior if the model requested is `user`.
         if (_ctx.request.route.controller.toLowerCase() === 'user') {
           // Set the default `where` object.
           _ctx.request.query.where = _ctx.request.query.where || {};
           _ctx.request.query.where.id = [user.id];
-
         } else {
           // Pluralize the controller name in order to have the relation name.
           const relation = pluralize.plural(route.controller).toLowerCase();
@@ -116,6 +115,7 @@ module.exports = {
 
         return true;
       } else {
+        // Default behavior.
         return false;
       }
     }
@@ -129,7 +129,7 @@ module.exports = {
       }
     }
 
-    // Defaults to false`.
+    // Defaults to `false`.
     return false;
   }
 };

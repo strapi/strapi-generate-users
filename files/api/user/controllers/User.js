@@ -17,7 +17,7 @@ module.exports = {
   find: function * () {
     this.model = model;
     try {
-      let entry = yield strapi.hooks.blueprints.find(this);
+      const entry = yield strapi.hooks.blueprints.find(this);
       this.body = entry;
     } catch (err) {
       this.body = err;
@@ -33,7 +33,7 @@ module.exports = {
   findOne: function * () {
     this.model = model;
     try {
-      let entry = yield strapi.hooks.blueprints.findOne(this);
+      const entry = yield strapi.hooks.blueprints.findOne(this);
       this.body = entry;
     } catch (err) {
       this.body = err;
@@ -49,7 +49,7 @@ module.exports = {
   create: function * () {
     this.model = model;
     try {
-      let entry = yield strapi.hooks.blueprints.create(this);
+      const entry = yield strapi.hooks.blueprints.create(this);
       this.body = entry;
     } catch (err) {
       this.body = err;
@@ -65,7 +65,7 @@ module.exports = {
   update: function * () {
     this.model = model;
     try {
-      let entry = yield strapi.hooks.blueprints.update(this);
+      const entry = yield strapi.hooks.blueprints.update(this);
       this.body = entry;
     } catch (err) {
       this.body = err;
@@ -81,7 +81,7 @@ module.exports = {
   destroy: function * () {
     this.model = model;
     try {
-      let entry = yield strapi.hooks.blueprints.destroy(this);
+      const entry = yield strapi.hooks.blueprints.destroy(this);
       this.body = entry;
     } catch (err) {
       this.body = err;
@@ -97,7 +97,7 @@ module.exports = {
   add: function * () {
     this.model = model;
     try {
-      let entry = yield strapi.hooks.blueprints.add(this);
+      const entry = yield strapi.hooks.blueprints.add(this);
       this.body = entry;
     } catch (err) {
       this.body = err;
@@ -113,7 +113,7 @@ module.exports = {
   remove: function * () {
     this.model = model;
     try {
-      let entry = yield strapi.hooks.blueprints.remove(this);
+      const entry = yield strapi.hooks.blueprints.remove(this);
       this.body = entry;
     } catch (err) {
       this.body = err;
