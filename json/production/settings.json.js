@@ -7,6 +7,6 @@
 module.exports = function dataForSettingsJSON(scope) {
 
   return {
-    'jwtSecret': scope.jwtSecret
+    'jwtSecret': scope.jwtSecretProduction
   };
 };
