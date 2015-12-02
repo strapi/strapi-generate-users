@@ -10,7 +10,6 @@ const path = require('path');
 // Public node modules.
 const _ = require('lodash');
 const anchor = require('anchor');
-const bcrypt = require('bcryptjs');
 
 // Model settings
 const settings = require('./User.settings.json');
@@ -109,35 +108,17 @@ module.exports = {
       // Go next step or not
       _.isEmpty(err) ? next() : next(err);
     } else {
-      next(new Error('Unknow module or no template detected'));
+      next(new Error('Unknown module or no template detected'));
     }
   },
 
   // Before create.
   beforeCreate: function (user, next) {
-    hashPassword(user, next);
+    strapi.api.user.services.user.hashPassword(user, next);
   },
 
   // Before update.
   beforeUpdate: function (user, next) {
-    hashPassword(user, next);
+    strapi.api.user.services.user.hashPassword(user, next);
   }
 };
-
-/**
- * Helper used for both beforeCreate and beforeUpdate
- *
- * @param {Object} user
- * @param {Function} next
- */
-
-function hashPassword(user, next) {
-  if (user.hasOwnProperty('password')) {
-    bcrypt.hash(user.password, 10, function (err, hash) {
-      user.password = hash;
-      next(err, user);
-    });
-  } else {
-    next(null, user);
-  }
-}

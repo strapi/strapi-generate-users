@@ -135,6 +135,15 @@ module.exports = {
       };
     }
 
+    // Throw an error if the password selected by the user
+    // contains more than two times the symbol '$'.
+    if (strapi.api.user.services.user.isHashed(params.password)) {
+      ctx.status = 400;
+      return ctx.body = {
+        message: 'Your password can not contain more than three times the symbol `$`.'
+      };
+    }
+
     // First, check if the user is the first one to register.
     try {
       const usersCount = yield User.count();
