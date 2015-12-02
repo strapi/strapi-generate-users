@@ -10,6 +10,7 @@ const path = require('path');
 // Public node modules.
 const _ = require('lodash');
 const anchor = require('anchor');
+const bcrypt = require('bcryptjs');
 
 // Model settings
 const settings = require('./User.settings.json');
