@@ -123,7 +123,7 @@ module.exports = {
     const params = _.assign(ctx.request.body, {
       id_ref: 1,
       lang: strapi.config.i18n.defaultLocale,
-      template: 'standard',
+      template: 'default',
       provider: 'local'
     });
 
@@ -132,6 +132,15 @@ module.exports = {
       ctx.status = 400;
       return ctx.body = {
         message: 'Invalid password field.'
+      };
+    }
+
+    // Throw an error if the password selected by the user
+    // contains more than two times the symbol '$'.
+    if (strapi.api.user.services.user.isHashed(params.password)) {
+      ctx.status = 400;
+      return ctx.body = {
+        message: 'Your password can not contain more than three times the symbol `$`.'
       };
     }
 

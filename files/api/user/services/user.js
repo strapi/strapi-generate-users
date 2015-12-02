@@ -6,6 +6,7 @@
 
 // Public node modules
 const _ = require('lodash');
+const bcrypt = require('bcryptjs');
 const pluralize = require('pluralize');
 
 /**
@@ -13,6 +14,38 @@ const pluralize = require('pluralize');
  */
 
 module.exports = {
+
+  /**
+   * Helper used to hash the password of a `user`.
+   *
+   * @param {Object}   user
+   * @param {Function} next
+   */
+
+  hashPassword: function (user, next) {
+    if (!user.hasOwnProperty('password') || !user.password || this.isHashed(user.password)) {
+      next(null, user);
+    } else {
+      bcrypt.hash(user.password, 10, function (err, hash) {
+        user.password = hash;
+        next(err, user);
+      });
+    }
+  },
+
+  /**
+   * Check if the password is already a hash.
+   *
+   * @param   {String}    password
+   * @returns {boolean}
+   */
+
+  isHashed: function (password) {
+    if (typeof password !== 'string' || !password) {
+      return false;
+    }
+    return password.split('$').length === 4;
+  },
 
   /**
    * Check is the user has the roles needed for
