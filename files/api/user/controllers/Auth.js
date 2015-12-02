@@ -123,7 +123,7 @@ module.exports = {
     const params = _.assign(ctx.request.body, {
       id_ref: 1,
       lang: strapi.config.i18n.defaultLocale,
-      template: 'standard',
+      template: 'default',
       provider: 'local'
     });
 
