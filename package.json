@@ -22,7 +22,8 @@
     "purest": "~2.0.0"
   },
   "devDependencies": {
-    "xo": "~0.11.0"
+    "pre-commit": "~1.1.2",
+    "xo": "~0.11.2"
   },
   "xo": {
     "space": true,
