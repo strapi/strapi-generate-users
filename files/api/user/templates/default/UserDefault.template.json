@@ -2,7 +2,7 @@
   "default": {
     "attributes": {
       "username": {
-        "minLength": 6,
+        "minLength": 3,
         "required": true
       },
       "email": {
