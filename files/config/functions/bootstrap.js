@@ -11,9 +11,10 @@
 module.exports.bootstrap = function (cb) {
   const fixtures = require('../../api/user/config/fixtures/index');
 
-  fixtures.role.create().then(function () {
-    return fixtures.route.create();
-  })
+  fixtures.role.create()
+    .then(function () {
+      return fixtures.route.create();
+    })
     .then(function () {
       cb();
     })
