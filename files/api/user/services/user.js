@@ -81,6 +81,11 @@ module.exports = {
       return true;
     }
 
+    // Connection from the Studio.
+    if (process.env.NODE_ENV !== 'production' && strapi.config.studio && strapi.config.studio.token && strapi.config.studio.token === _ctx.request.headers.studiotoken) {
+      return true;
+    }
+
     // Find the current route and its authorized roles.
     route = yield strapi.orm.collections.route.findOne({
       name: _.trim(_ctx.request.route.endpoint)
