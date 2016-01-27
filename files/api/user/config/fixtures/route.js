@@ -141,7 +141,7 @@ exports.create = function () {
       });
 
       _.forEach(newRoutesFound, function (newRoute) {
-        if (!_.contains(newRoute.name, '/dashboard')) {
+        if (!_.contains(newRoute.name, '/admin')) {
 
           // Contributor permissions.
           verb = regex.detectRoute(newRoute.name).verb;
