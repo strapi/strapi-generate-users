@@ -12,10 +12,16 @@
       "callback": "/auth/google/callback",
       "scope": ["email"]
     },
-    "twitter": {
+    "github": {
       "key": "",
       "secret": "",
-      "callback": "/auth/twitter/callback"
+      "callback": "/auth/github/callback"
+    },
+    "linkedin2": {
+      "key": "",
+      "secret": "",
+      "callback": "/auth/linkedin2/callback",
+      "custom_params": {"state": ""}
     }
   }
 }
