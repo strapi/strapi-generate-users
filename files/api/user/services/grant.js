@@ -27,6 +27,10 @@ const google = new Purest({
   provider: 'google'
 });
 
+const linkedin = new Purest({
+  provider: 'linkedin'
+});
+
 /**
  * Connect thanks to a third-party provider.
  *
@@ -108,6 +112,18 @@ function getProfile(provider, access_token, callback) {
         }
       });
       break;
+    case 'google':
+      google.query('plus').get('people/me').auth(access_token).request(function (err, res, body) {
+        if (err) {
+          callback(err);
+        } else {
+          callback(null, {
+            username: body.displayName,
+            email: body.emails[0].value
+          });
+        }
+      });
+      break;
     case 'github':
       github.query().get('user').auth(access_token).request(function (err, res, body) {
         if (err) {
@@ -120,14 +136,17 @@ function getProfile(provider, access_token, callback) {
         }
       });
       break;
-    case 'google':
-      google.query('plus').get('people/me').auth(access_token).request(function (err, res, body) {
+    case 'linkedin2':
+      var fields = [
+        'public-profile-url','email-address'
+      ];
+      linkedin.query().select('people/~'+':('+fields.join()+')?format=json').auth(access_token).request(function (err, res, body) {
         if (err) {
           callback(err);
         } else {
           callback(null, {
-            username: body.displayName,
-            email: body.emails[0].value
+            username: substr(body.publicProfileUrl.lastIndexOf('/') + 1),
+            email: body.emailAddress
           });
         }
       });
