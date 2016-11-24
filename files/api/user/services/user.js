@@ -154,9 +154,10 @@ module.exports = {
     }
 
     // Check by roles.
+    // user.roles is an empty array, so switching to _ctx.user.roles
     let userRole;
-    for (let i = 0; i < user.roles.length; i++) {
-      userRole = user.roles[i].name;
+    for (let i = 0; i < _ctx.user.roles.length; i++) {
+      userRole = _ctx.user.roles[i].name;
       if (userRole && _.contains(authorizedRoles, userRole)) {
         return true;
       }
