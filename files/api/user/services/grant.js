@@ -99,6 +99,7 @@ exports.connect = function * connect(provider, access_token) {
  */
 
 function getProfile(provider, access_token, callback) {
+  let fields;
   switch (provider) {
     case 'facebook':
       facebook.query().get('me?fields=name,email').auth(access_token).request(function (err, res, body) {
@@ -137,10 +138,10 @@ function getProfile(provider, access_token, callback) {
       });
       break;
     case 'linkedin2':
-      var fields = [
-        'public-profile-url','email-address'
+      fields = [
+        'public-profile-url', 'email-address'
       ];
-      linkedin.query().select('people/~'+':('+fields.join()+')?format=json').auth(access_token).request(function (err, res, body) {
+      linkedin.query().select('people/~:(' + fields.join() + ')?format=json').auth(access_token).request(function (err, res, body) {
         if (err) {
           callback(err);
         } else {
