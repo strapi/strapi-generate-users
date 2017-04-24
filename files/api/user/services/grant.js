@@ -42,53 +42,51 @@ const linkedin = new Purest({
  */
 
 exports.connect = function * connect(provider, access_token) {
-  const deferred = Promise.defer();
-
-  if (!access_token) {
-    deferred.reject({
-      message: 'No access_token.'
-    });
-  } else {
-    // Get the profile.
-    getProfile(provider, access_token, function (err, profile) {
-      if (err) {
-        deferred.reject(err);
-      } else {
-        // We need at least the mail.
-        if (!profile.email) {
-          deferred.reject({
-            message: 'Email was not available.'
-          });
+  return new Promise(function (resolve, reject) {
+    if (!access_token) {
+      reject({
+        message: 'No access_token.'
+      });
+    } else {
+      // Get the profile.
+      getProfile(provider, access_token, function (err, profile) {
+        if (err) {
+          reject(err);
         } else {
-          User.findOne({email: profile.email}).exec(function (err, user) {
-            if (err) {
-              deferred.reject(err);
-            } else if (!user) {
-              // Create the new user.
-              const params = _.assign(profile, {
-                id_ref: 1,
-                lang: strapi.config.i18n.defaultLocale,
-                template: 'standard',
-                provider: provider
-              });
+          // We need at least the mail.
+          if (!profile.email) {
+            reject({
+              message: 'Email was not available.'
+            });
+          } else {
+            User.findOne({email: profile.email}).exec(function (err, user) {
+              if (err) {
+                reject(err);
+              } else if (!user) {
+                // Create the new user.
+                const params = _.assign(profile, {
+                  id_ref: 1,
+                  lang: strapi.config.i18n.defaultLocale,
+                  template: 'standard',
+                  provider: provider
+                });
 
-              User.create(params).exec(function (err, user) {
-                if (err) {
-                  deferred.reject(err);
-                } else {
-                  deferred.resolve(user);
-                }
-              });
-            } else {
-              deferred.resolve(user);
-            }
-          });
+                User.create(params).exec(function (err, user) {
+                  if (err) {
+                    reject(err);
+                  } else {
+                    resolve(user);
+                  }
+                });
+              } else {
+                resolve(user);
+              }
+            });
+          }
         }
-      }
-    });
-  }
-
-  return deferred.promise;
+      });
+    }
+  });
 };
 
 /**

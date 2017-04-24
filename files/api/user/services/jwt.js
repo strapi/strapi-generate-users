@@ -32,21 +32,19 @@ exports.issue = function (payload) {
  */
 
 exports.verify = function (token) {
-  const deferred = Promise.defer();
-
-  jwt.verify(
-    token,
-    process.env.JWT_SECRET || strapi.api.user.config.jwtSecret || 'oursecret',
-    {},
-    function (err, user) {
-      if (err || !user || !user.id) {
-        return deferred.reject(err);
+  return new Promise(function (resolve, reject) {
+    jwt.verify(
+      token,
+      process.env.JWT_SECRET || strapi.api.user.config.jwtSecret || 'oursecret',
+      {},
+      function (err, user) {
+        if (err || !user || !user.id) {
+          return reject(err);
+        }
+        resolve(user);
       }
-      deferred.resolve(user);
-    }
-  );
-
-  return deferred.promise;
+    );
+  });
 };
 
 /**
